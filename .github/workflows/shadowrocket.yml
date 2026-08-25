@@ -1,0 +1,177 @@
+name: Build Shadowrocket rulesets
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # UTC 00:00 = Beijing 08:00, after upstreams publish their daily update
+  workflow_dispatch: {}
+  push:
+    branches: [master]
+    paths: [".github/workflows/shadowrocket.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Build logic fully inlined: pull original upstream sources,
+      # generate Surge/SR format, force-push to the shadowrocket branch
+      - name: Build rules
+        run: |
+          python3 <<'PYEOF'
+          import re, time, urllib.request
+          from pathlib import Path
+
+          OUT = Path.cwd() / "out"
+          OUT.mkdir(parents=True, exist_ok=True)
+
+          HOST = r"[-_a-zA-Z0-9]+(?:\.[-_a-zA-Z0-9]+)*"
+          CIDR = re.compile(r"^[0-9a-fA-F:.]+/\d+$")
+
+          U = {
+              "dlc":   "https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release",
+              "v2rd":  "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release",
+              "dnsc":  "https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master",
+              "geoip": "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text",
+              "17mon": "https://raw.githubusercontent.com/17mon/china_ip_list/master",
+          }
+
+          # name -> (url, v2fly parse mode); None means non-v2fly syntax
+          SOURCES = {
+              "direct.txt":        (f"{U['v2rd']}/direct-list.txt",   "full_as_exact"),
+              "proxy.txt":         (f"{U['v2rd']}/proxy-list.txt",    "full_as_exact"),
+              "gfw.txt":           (f"{U['v2rd']}/gfw.txt",           "all_suffix"),
+              "greatfire.txt":     (f"{U['v2rd']}/greatfire.txt",     "all_suffix"),
+              "reject.txt":        (f"{U['v2rd']}/reject-list.txt",   "all_suffix"),
+              "private.txt":       (f"{U['dlc']}/private.txt",        "full_as_exact"),
+              "icloud.txt":        (f"{U['dlc']}/icloud.txt",         "all_suffix"),
+              "tld-not-cn.txt":    (f"{U['dlc']}/tld-!cn.txt",        "tld"),
+              "apple.txt":         (f"{U['dnsc']}/apple.china.conf",   None),
+              "google.txt":        (f"{U['dnsc']}/google.china.conf",  None),
+              "cncidr.txt":        (f"{U['geoip']}/cn.txt",            None),
+              "lancidr.txt":       (f"{U['geoip']}/private.txt",       None),
+              "telegramcidr.txt":  (f"{U['geoip']}/telegram.txt",      None),
+              "china_ip_list.txt": (f"{U['17mon']}/china_ip_list.txt", None),
+          }
+          CIDR_FILES = {"cncidr.txt", "lancidr.txt", "telegramcidr.txt", "china_ip_list.txt"}
+          DNS_FILES = {"apple.txt", "google.txt"}
+
+          def fetch(url):
+              err = None
+              for i in range(3):
+                  try:
+                      req = urllib.request.Request(url, headers={"User-Agent": "proxy-rules/1.0"})
+                      with urllib.request.urlopen(req, timeout=30) as r:
+                          return r.read().decode("utf-8")
+                  except Exception as e:
+                      err = e
+                      time.sleep(2 * (i + 1))
+              raise RuntimeError(f"download failed: {url}: {err}")
+
+          def parse_v2fly(text, mode):
+              # full_as_exact: full: -> exact, domain:/bare -> suffix
+              # all_suffix:    everything -> suffix
+              # tld:           only domain: lines -> suffix
+              out = []
+              for raw in text.splitlines():
+                  l = raw.strip()
+                  if not l or l.startswith("#") or l.startswith(("keyword:", "regexp:")):
+                      continue
+                  if l.startswith("full:"):
+                      v = l[5:].strip()
+                      if re.fullmatch(HOST, v):
+                          out.append(("exact" if mode == "full_as_exact" else "suffix", v))
+                      continue
+                  v = l[7:].strip() if l.startswith("domain:") else l
+                  if re.fullmatch(HOST, v) and (mode != "tld" or l.startswith("domain:")):
+                      out.append(("suffix", v))
+              return out
+
+          def parse_dnsmasq(text):
+              return [("suffix", m.group(1)) for l in text.splitlines()
+                      if (m := re.match(r"server=/([^/]+)/", l.strip()))]
+
+          def parse_cidrs(text):
+              return [("cidr", l.strip()) for l in text.splitlines() if CIDR.fullmatch(l.strip())]
+
+          def build(name, text, mode):
+              if name in DNS_FILES:
+                  return parse_dnsmasq(text)
+              if name in CIDR_FILES:
+                  return parse_cidrs(text)
+              return parse_v2fly(text, mode)
+
+          def ruleset(entries):
+              out = []
+              for k, v in entries:
+                  out.append(f"+.{v}" if k == "suffix" else v if k == "exact" else f"IP-CIDR,{v}")
+              return "\n".join(out) + "\n"
+
+          produced = {"security.txt"}
+          built = {}
+          for name, (url, mode) in SOURCES.items():
+              entries = build(name, fetch(url), mode)
+              built[name] = entries
+              (OUT / name).write_text(ruleset(entries), encoding="utf-8")
+              produced.add(name)
+              print(f"OK   {name:<22}{len(entries):>8} entries")
+
+          # ---- supplemental security feeds (malware/mining/phishing),
+          # deduplicated against ALL core sets before emitting ----
+          covered = set()
+          for entries in built.values():
+              covered.update(v for _, v in entries)
+
+          def is_covered(d):
+              parts = d.split(".")
+              return any(".".join(parts[i:]) in covered for i in range(len(parts)))
+
+          SECURITY_FEEDS = [
+              ("urlhaus",       "https://raw.githubusercontent.com/curbengh/urlhaus-filter/master/urlhaus-filter-domains.txt"),
+              ("nocoin",        "https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt"),
+              ("phishing-army", "https://phishing.army/download/phishing_army_blocklist_extended.txt"),
+              ("openphish",     "https://openphish.com/feed.txt"),
+          ]
+          seen = set()
+          for label, url in SECURITY_FEEDS:
+              added = 0
+              for raw in fetch(url).splitlines():
+                  l = raw.strip()
+                  if not l or l.startswith(("#", "!", "//")):
+                      continue
+                  parts = l.split()
+                  if len(parts) > 1 and parts[0].replace(".", "").isdigit():
+                      l = parts[-1]  # hosts 格式:0.0.0.0 domain
+                  if l.startswith(("http://", "https://")):
+                      u = l.split("/", 3)
+                      l = u[2] if len(u) > 2 else ""
+                  h = l.lower()
+                  h = re.sub(r":[0-9]+$", "", h)
+                  if not re.fullmatch(HOST, h) or is_covered(h) or h in seen:
+                      continue
+                  seen.add(h)
+                  added += 1
+              print(f"SEC  {label:<16}{added:>8} new")
+          sec_entries = [("suffix", h) for h in sorted(seen)]
+
+          (OUT / "security.txt").write_text(ruleset(sec_entries), encoding="utf-8")
+          print(f"SEC  {'security.txt':<22}{len(seen):>8} total")
+          for p in sorted(OUT.iterdir()):
+              if p.name not in produced:
+                  print(f"DEL  {p.name}")
+                  p.unlink()
+          print(f">>> Shadowrocket rulesets built: {len(produced)} files")
+          PYEOF
+
+      - name: Publish to shadowrocket branch
+        run: |
+          cd out
+          git init -q -b shadowrocket
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "build: $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git remote add origin \
+            "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -qf origin shadowrocket

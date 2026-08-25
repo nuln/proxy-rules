@@ -1,0 +1,72 @@
+proxy-groups:
+- name: Default
+  type: select
+  include-all: true
+
+rule-providers:
+  private:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/private.txt
+    interval: 86400
+  gfw:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/gfw.txt
+    interval: 86400
+  greatfire:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/greatfire.txt
+    interval: 86400
+  tld-not-cn:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tld-not-cn.txt
+    interval: 86400
+  proxy:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/proxy.txt
+    interval: 86400
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/telegramcidr.txt
+    interval: 86400
+  lancidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/lancidr.txt
+    interval: 86400
+  cncidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/cncidr.txt
+    interval: 86400
+
+rules:
+  # private / LAN hostnames -> Direct FIRST (short-circuit)
+  - RULE-SET,private,DIRECT
+  # blocked domains -> Default (your nodes)
+  - RULE-SET,gfw,Default
+  - RULE-SET,greatfire,Default
+  - RULE-SET,tld-not-cn,Default
+  - RULE-SET,proxy,Default
+  # Telegram IP ranges
+  - RULE-SET,telegramcidr,Default,no-resolve
+  # LAN IP ranges
+  - RULE-SET,lancidr,DIRECT,no-resolve
+  # China IP ranges + GeoIP fallback
+  - RULE-SET,cncidr,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT
+  # everything else -> Direct (blacklist semantics)
+  - MATCH,DIRECT

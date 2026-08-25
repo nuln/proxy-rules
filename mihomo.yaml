@@ -1,0 +1,228 @@
+# =====================================================================
+# Example mihomo configuration consuming rules from the `mihomo` branch.
+# Replace example node parameters (server/uuid/public-key) with real values.
+# =====================================================================
+mixed-port: 7890
+allow-lan: true
+mode: rule
+log-level: info
+ipv6: false
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - tls://223.5.5.5
+    - https://doh.pub
+
+
+proxies:
+- name: "jp-reality-01"
+  type: vless
+  server: jp01.example.com
+  port: 443
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  udp: true
+  flow: xtls-rprx-vision
+  packet-encoding: xudp
+  tls: true
+  servername: www.example.com
+  alpn:
+  - h2
+  - http/1.1
+  client-fingerprint: chrome
+  skip-cert-verify: false
+  network: tcp
+  reality-opts:
+    public-key: PBK_REPLACE_ME
+
+- name: "sg-reality-02"
+  type: vless
+  server: sg02.example.com
+  port: 443
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  udp: true
+  flow: xtls-rprx-vision
+  packet-encoding: xudp
+  tls: true
+  servername: www.example.com
+  alpn:
+  - h2
+  - http/1.1
+  client-fingerprint: chrome
+  skip-cert-verify: false
+  network: tcp
+  reality-opts:
+    public-key: PBK_REPLACE_ME
+
+- name: "us-reality-03"
+  type: vless
+  server: us03.example.com
+  port: 443
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  udp: true
+  flow: xtls-rprx-vision
+  packet-encoding: xudp
+  tls: true
+  servername: www.example.com
+  alpn:
+  - h2
+  - http/1.1
+  client-fingerprint: chrome
+  skip-cert-verify: false
+  network: tcp
+  reality-opts:
+    public-key: PBK_REPLACE_ME
+
+proxy-groups:
+- name: Default
+  type: select
+  proxies:
+  - Fallback
+  - Auto
+  - jp-reality-01
+  - sg-reality-02
+  - us-reality-03
+- name: Auto
+  type: url-test
+  proxies:
+  - jp-reality-01
+  - sg-reality-02
+  - us-reality-03
+  url: http://www.gstatic.com/generate_204
+  interval: 300
+- name: Fallback
+  type: fallback
+  proxies:
+  - jp-reality-01
+  - sg-reality-02
+  - us-reality-03
+  url: http://www.gstatic.com/generate_204
+  interval: 300
+
+
+rule-providers:
+  reject:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/reject.txt
+    interval: 86400
+  security:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/security.txt
+    interval: 86400
+  private:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/private.txt
+    interval: 86400
+  lancidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/lancidr.txt
+    interval: 86400
+  icloud:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/icloud.txt
+    interval: 86400
+  apple:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/apple.txt
+    interval: 86400
+  google:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/google.txt
+    interval: 86400
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/telegramcidr.txt
+    interval: 86400
+  gfw:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/gfw.txt
+    interval: 86400
+  greatfire:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/greatfire.txt
+    interval: 86400
+  tld-not-cn:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tld-not-cn.txt
+    interval: 86400
+  proxy:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/proxy.txt
+    interval: 86400
+  direct:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/direct.txt
+    interval: 86400
+  cncidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/cncidr.txt
+    interval: 86400
+  china-ip-list:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/china_ip_list.txt
+    interval: 86400
+
+rules:
+  # LAN & private
+  - RULE-SET,private,DIRECT
+  - RULE-SET,lancidr,DIRECT,no-resolve
+  # ads & security threats
+  - RULE-SET,reject,REJECT
+  - RULE-SET,security,REJECT
+  # Apple / iCloud reachable directly
+  - RULE-SET,icloud,DIRECT
+  - RULE-SET,apple,DIRECT
+  # Google
+  - RULE-SET,google,Default
+  # Telegram IP ranges
+  - RULE-SET,telegramcidr,Default,no-resolve
+  # proxied domains
+  - RULE-SET,gfw,Default
+  - RULE-SET,greatfire,Default
+  - RULE-SET,tld-not-cn,Default
+  - RULE-SET,proxy,Default
+  # China domains
+  - RULE-SET,direct,DIRECT
+  # China IP ranges (two sources) + GeoIP fallback
+  - RULE-SET,cncidr,DIRECT,no-resolve
+  - RULE-SET,china-ip-list,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT
+  # final fallback
+  - MATCH,DIRECT
+

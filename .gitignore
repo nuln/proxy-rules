@@ -1,0 +1,13 @@
+# Never commit configs that may contain real credentials
+/*.conf
+/*.yaml
+/*.yml
+/selfhost*
+/*links*
+__pycache__/
+
+# Client configuration examples are intentionally tracked on master
+!/mihomo.yaml
+!/mihomo.lite.yaml
+!/shadowrocket.conf
+!/shadowrocket.rule.module

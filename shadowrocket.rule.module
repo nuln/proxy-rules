@@ -1,0 +1,22 @@
+#!name = proxy-rules example
+#!desc = Rules from nuln/proxy-rules @shadowrocket branch, updated daily. Requires a policy group named Select (rename to match your own).
+#!date = 2026-08-25
+
+[Rule]
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/private.txt,Direct
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/lancidr.txt,Direct,no-resolve
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/reject.txt,Reject
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/security.txt,Reject
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/icloud.txt,Direct
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/apple.txt,Direct
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/telegramcidr.txt,Select,no-resolve
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/google.txt,Select
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/gfw.txt,Select
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/greatfire.txt,Select
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tld-not-cn.txt,Select
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/proxy.txt,Select
+DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/direct.txt,Direct
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/cncidr.txt,Direct,no-resolve
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/china_ip_list.txt,Direct,no-resolve
+GEOIP,CN,Direct
+FINAL,Direct
