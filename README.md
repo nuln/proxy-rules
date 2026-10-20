@@ -44,7 +44,7 @@ The master client configurations already reference the generated `tailscale.txt`
 Coding AI, coding agents, and AI app builders only. Every domain was tested on
 2026-10-20. The generated rules are proxied:
 
-- mihomo: `RULE-SET,ai-coding,Default`
+- mihomo: `RULE-SET,ai-coding,Select`
 - Shadowrocket: `RULE-SET,...,ai-coding.txt,Select`
 
 Domains intentionally excluded:

@@ -1,5 +1,5 @@
 # Coding AI / agents (verified 2026-10-20)
-# Coding-related services only. The client RULE-SET decides the policy (Default/Select).
+# Coding-related services only. Both clients route this set to the Select proxy group.
 # Excluded domains are documented in the branch README.
 
 # Coding agents / IDE
