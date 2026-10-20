@@ -1,17 +1,18 @@
 # individual
 
-这个分支只放自定义规则，Actions **只读**，不会被 force-push 覆盖。
+Custom rule source for `proxy-rules`. This branch is read-only to CI: its files are the
+source of truth and are never force-pushed by the build.
 
-分支是**扁平**的，不放目录；根目录下每个 `*.list` 都是 mihomo 和 Shadowrocket
-共用的规则文件。`master` 上的两个构建 workflow 会 checkout 本分支，并同时生成：
+The branch is flat. Each root-level `*.list` file is shared by mihomo and Shadowrocket.
+The workflows on `master` check out this branch and generate:
 
-| 源文件 | mihomo 输出 | Shadowrocket 输出 |
+| Source | mihomo output | Shadowrocket output |
 |---|---|---|
-| `foo.list` | `foo.txt`（classical `payload`） | `foo.txt`（原样规则行） |
+| `foo.list` | `foo.txt` (classical `payload`) | `foo.txt` (raw rule lines) |
 
-## 格式
+## Format
 
-Surge 规则行，**不写策略**；只使用两端都支持的规则类型：
+Use Surge-style rule lines without a policy. Only use rule types supported by both clients:
 
 ```text
 DOMAIN-SUFFIX,example.com
@@ -19,7 +20,14 @@ IP-CIDR,203.0.113.0/24,no-resolve
 IP-CIDR6,2001:db8::/32,no-resolve
 ```
 
-`tailscale.list` 已经生成两端的 `tailscale.txt`，客户端配置里已经引用：
+For mihomo, the generated file is a classical payload, so the corresponding provider must
+use `behavior: classical`. Do not use `behavior: domain` for these files.
+
+## Existing lists
+
+### `tailscale.list`
+
+Keeps Tailscale MagicDNS, Serve, and CGNAT traffic DIRECT:
 
 ```text
 DOMAIN-SUFFIX,ts.net
@@ -29,35 +37,49 @@ IP-CIDR,100.64.0.0/10,no-resolve
 IP-CIDR6,fd7a:115c:a1e0::/48,no-resolve
 ```
 
-只想加一条 **DIRECT** 规则时，直接追加到这个文件即可，不用改客户端配置，也不用改
-workflow。新建 `foo.list` 也可以，但需要在 `mihomo.yaml` / `shadowrocket.conf`
-里加一条 `RULE-SET,foo,DIRECT`。
+The master client configurations already reference the generated `tailscale.txt`.
 
-## 编码 AI
+### `ai-coding.list`
 
-`ai-coding.list` 只放**编码相关**的 AI / Agent / AI 应用构建器，客户端按
-`RULE-SET,ai-coding,Default`（mihomo）和 `RULE-SET,...,ai-coding.txt,Select`
-（Shadowrocket）走代理。2026-10-20 逐个实测通过；以下域名**没有**加入：
+Coding AI, coding agents, and AI app builders only. Every domain was tested on
+2026-10-20. The generated rules are proxied:
 
-| 域名 | 不加入的原因 |
+- mihomo: `RULE-SET,ai-coding,Default`
+- Shadowrocket: `RULE-SET,...,ai-coding.txt,Select`
+
+Domains intentionally excluded:
+
+| Domain | Reason |
 |---|---|
-| `continue.dev` | 已被 Cursor 收购，站点只剩收购公告 |
-| `supermaven.com` | 已被 Cursor 收购，产品线不再维护 |
-| `tabnine.com` | 已跳转到 Tricentis，产品页不再独立 |
-| `roocode.com` | 已跳转到 Roomote，Roo Code Cloud 不再运营 |
-| `codegen.com` | 已并入 ClickUp，当前是内容导航站 |
-| `sweep.dev` | DNS 无解析，站点不存在 |
-| `grit.io` | 跳转文档站，不是编码 Agent 服务 |
-| `phind.com` | Cloudflare 403，且属于通用 AI 搜索而非编码 Agent |
+| `continue.dev` | Acquired by Cursor; site only shows an acquisition notice |
+| `supermaven.com` | Acquired by Cursor; product line no longer maintained |
+| `tabnine.com` | Redirects to Tricentis; no standalone product site |
+| `roocode.com` | Redirects to Roomote; Roo Code Cloud is no longer operating |
+| `codegen.com` | Joined ClickUp; currently a content directory |
+| `sweep.dev` | No DNS record; site does not exist |
+| `grit.io` | Redirects to documentation; not a coding agent service |
+| `phind.com` | Cloudflare 403; general AI search, not a coding agent |
 
-国内 `trae.cn` 不放进这个代理列表；它由 `GEOIP,CN,DIRECT` / `MATCH,DIRECT` 直连。
+`trae.cn` is intentionally not in the proxy list. It is routed DIRECT by
+`GEOIP,CN,DIRECT` / `MATCH,DIRECT`.
 
+## Adding a new list
 
-## 注意
+1. Create `name.list` in the root of this branch.
+2. Add Surge-style rules without a policy.
+3. Wire it in the client configuration on `master`:
+   - mihomo: add a provider with `behavior: classical`, then `RULE-SET,name,<policy>`.
+   - Shadowrocket: add `RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/name.txt,<policy>`.
+4. Rebuild through Actions, or wait for the daily schedule.
 
-- 输出文件名 = 源文件名（`foo.list` → `foo.txt`），不能和内置 15 个文件重名。
-- 规则里不写策略；策略由客户端的 `RULE-SET,...,DIRECT` / `REJECT` 决定。
-- 修改后：等每天 08:00 的定时构建，或在 Actions 页面手动 **Run workflow**，
-  也可以本地执行 `gh workflow run mihomo.yml` / `gh workflow run shadowrocket.yml`。
-- push 到本分支**不会**自动触发构建（本分支没有 workflow 文件）。
-- 不要直接改 `mihomo` / `shadowrocket` 分支，它们会被 force-push 覆盖。
+New file names must not collide with the 15 built-in outputs: `security`, `direct`, `proxy`,
+`gfw`, `greatfire`, `reject`, `private`, `icloud`, `tld-not-cn`, `apple`, `google`, `cncidr`,
+`lancidr`, `telegramcidr`, and `china_ip_list`.
+
+## Build and edit rules
+
+- A push to this branch does not trigger a build. Run `mihomo.yml` / `shadowrocket.yml`
+  manually from Actions, or wait for the daily 08:00 Beijing time schedule.
+- The build strips comments; keep rule lines clean.
+- Never edit the `mihomo` or `shadowrocket` branches directly. Both are force-pushed by CI.
+- Output file name equals the source file name: `foo.list` becomes `foo.txt`.

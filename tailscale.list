@@ -1,5 +1,5 @@
 # Tailscale MagicDNS / Serve / CGNAT
-# 扁平规则文件：mihomo 会转成 classical payload，Shadowrocket 原样输出。
+# Flat rule file: mihomo converts it to a classical payload; Shadowrocket emits raw rules.
 DOMAIN-SUFFIX,ts.net
 DOMAIN-SUFFIX,tailscale.com
 DOMAIN-SUFFIX,tailscale.io

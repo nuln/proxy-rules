@@ -1,6 +1,6 @@
-# 编码 AI / Agent（2026-10-20 逐个实测通过）
-# 只收编码相关服务；策略由客户端 RULE-SET 决定，默认走 Default/Select。
-# 已排除：已收购/停运/跳转到无关站点的域名，见 README。
+# Coding AI / agents (verified 2026-10-20)
+# Coding-related services only. The client RULE-SET decides the policy (Default/Select).
+# Excluded domains are documented in the branch README.
 
 # Coding agents / IDE
 DOMAIN-SUFFIX,antigravity.google
