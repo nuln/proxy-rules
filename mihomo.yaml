@@ -232,7 +232,17 @@ rules:
   # Apple / iCloud reachable directly
   - RULE-SET,icloud,DIRECT
   - RULE-SET,apple,DIRECT
-  # Coding AI / agents -> proxy
+  # Coding AI / agents: direct overrides must precede the ai-coding rule-set
+  - DOMAIN-SUFFIX,opencode-ai.com,DIRECT
+  - DOMAIN-SUFFIX,cline.bot,DIRECT
+  - DOMAIN-SUFFIX,aider.chat,DIRECT
+  - DOMAIN-SUFFIX,factory.com,DIRECT
+  - DOMAIN-SUFFIX,augmentcode.com,DIRECT
+  - DOMAIN-SUFFIX,ampcode.com,DIRECT
+  - DOMAIN-SUFFIX,replit.com,DIRECT
+  - DOMAIN-SUFFIX,stackblitz.com,DIRECT
+  - DOMAIN-SUFFIX,firebase.studio,DIRECT
+  # Remaining coding AI / agents -> proxy
   - RULE-SET,ai-coding,Select
   # Google
   - RULE-SET,google,Select

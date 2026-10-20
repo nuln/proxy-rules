@@ -68,6 +68,9 @@ the file format, the existing lists, and the steps for adding a new list.
 
 - The build checks out `individual` and merges its `*.list` files into both generated branches.
 - `individual/*.list` uses Surge-style rule lines without a policy.
+- `ai-coding.list` is one category file, not split into direct/proxy files. The `ai-coding`
+  rule-set uses `Select`; the master client configs add explicit DIRECT overrides before
+  it for domains that should stay direct.
 - A new list also needs a `RULE-SET` entry in the client configuration that should consume it.
 - Pushing to `individual` does not trigger a build. Run `mihomo.yml` / `shadowrocket.yml`
   manually from Actions, or wait for the daily 08:00 Beijing time schedule.
