@@ -39,13 +39,22 @@ IP-CIDR6,fd7a:115c:a1e0::/48,no-resolve
 
 The master client configurations already reference the generated `tailscale.txt`.
 
-### `ai-coding.list`
+### `ai-coding-direct.list` and `ai-coding-proxy.list`
 
 Coding AI, coding agents, and AI app builders only. Every domain was tested on
-2026-10-20. The generated rules are proxied:
+2026-10-20. The category is split into two files because both mihomo and
+Shadowrocket apply one policy per `RULE-SET`; a single file cannot mix `DIRECT`
+and `Select` per line.
 
-- mihomo: `RULE-SET,ai-coding,Select`
-- Shadowrocket: `RULE-SET,...,ai-coding.txt,Select`
+Direct file (9 domains):
+
+- mihomo: `RULE-SET,ai-coding-direct,DIRECT`
+- Shadowrocket: `RULE-SET,...,ai-coding-direct.txt,Direct`
+
+Proxy file (16 domains):
+
+- mihomo: `RULE-SET,ai-coding-proxy,Select`
+- Shadowrocket: `RULE-SET,...,ai-coding-proxy.txt,Select`
 
 Domains intentionally excluded:
 

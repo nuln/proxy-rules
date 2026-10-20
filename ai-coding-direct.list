@@ -1,0 +1,14 @@
+# Coding AI / agents that work better as direct connections (verified 2026-10-20)
+# Routing policy: mihomo RULE-SET ai-coding-direct -> DIRECT
+#                  Shadowrocket RULE-SET ai-coding-direct.txt -> Direct
+# Proxy-required coding AI lives in ai-coding-proxy.list.
+
+DOMAIN-SUFFIX,opencode-ai.com
+DOMAIN-SUFFIX,cline.bot
+DOMAIN-SUFFIX,aider.chat
+DOMAIN-SUFFIX,factory.com
+DOMAIN-SUFFIX,augmentcode.com
+DOMAIN-SUFFIX,ampcode.com
+DOMAIN-SUFFIX,replit.com
+DOMAIN-SUFFIX,stackblitz.com
+DOMAIN-SUFFIX,firebase.studio

@@ -1,0 +1,21 @@
+# Coding AI / agents that need the proxy (verified 2026-10-20)
+# Routing policy: mihomo RULE-SET ai-coding-proxy -> Select
+#                  Shadowrocket RULE-SET ai-coding-proxy.txt -> Select
+# Direct-only coding AI lives in ai-coding-direct.list.
+
+DOMAIN-SUFFIX,antigravity.google
+DOMAIN-SUFFIX,opencode.ai
+DOMAIN-SUFFIX,models.dev
+DOMAIN-SUFFIX,commandcode.ai
+DOMAIN-SUFFIX,qodo.ai
+DOMAIN-SUFFIX,blackbox.ai
+DOMAIN-SUFFIX,refact.ai
+DOMAIN-SUFFIX,factory.ai
+DOMAIN-SUFFIX,zed.dev
+DOMAIN-SUFFIX,warp.dev
+DOMAIN-SUFFIX,trae.ai
+DOMAIN-SUFFIX,lovable.dev
+DOMAIN-SUFFIX,bolt.new
+DOMAIN-SUFFIX,v0.app
+DOMAIN-SUFFIX,v0.dev
+DOMAIN-SUFFIX,openhands.dev
