@@ -1,17 +1,22 @@
 # proxy-rules
 
-Self-hosted dual-client rule generation repository: builds rules directly from the original upstream data sources and outputs two rule formats for **Shadowrocket** and **mihomo**, updated daily by GitHub Actions.
+Self-hosted dual-client rule generation repository. It pulls upstream data directly and
+publishes rule sets for **mihomo (Clash Meta)** and **Shadowrocket**. GitHub Actions
+rebuilds the generated branches daily.
 
 ## Branch layout
 
-| Branch | Content |
-|---|---|
-| `master` | Two workflows (build logic fully inlined) + client configuration examples (`mihomo.yaml`, `mihomo.lite.yaml`, `shadowrocket.conf`, `shadowrocket.rule.module`) |
-| `individual` | 扁平的自定义规则源：根目录 `*.list`，mihomo 和 Shadowrocket 共用；Actions 只读，不会被覆盖 |
-| `mihomo` | Built-in 15 rule files + `individual/*.list` (clash payload, flat root), force-pushed daily |
-| `shadowrocket` | Built-in 15 rule files + `individual/*.list` (Surge/SR format, flat root), force-pushed daily |
+| Branch | Role | Contents |
+|---|---|---|
+| `master` | Source and configuration | Workflows and client configuration examples |
+| `individual` | Custom rule source | Flat `*.list` files shared by both clients; read-only to Actions |
+| `mihomo` | Generated | Built-in sets plus `individual/*.list` in Clash classical payload format |
+| `shadowrocket` | Generated | Built-in sets plus `individual/*.list` in Surge/Shadowrocket format |
 
-## Data sources (pulled directly from origin)
+Only `master` and `individual` are edited by hand. `mihomo` and `shadowrocket` are
+force-pushed by CI.
+
+## Data sources
 
 | Generated file | Upstream source |
 |---|---|
@@ -21,23 +26,24 @@ Self-hosted dual-client rule generation repository: builds rules directly from t
 | cncidr/lancidr/telegramcidr.txt | [Loyalsoldier/geoip](https://github.com/Loyalsoldier/geoip) |
 | china_ip_list.txt | [17mon/china_ip_list](https://github.com/17mon/china_ip_list) |
 | security.txt (malware/mining/phishing, deduped against all core sets) | [URLhaus](https://urlhaus.abuse.ch/) / [adblock-nocoin](https://github.com/hoshsadiq/adblock-nocoin-list) / [Phishing Army](https://phishing.army/) / [OpenPhish](https://openphish.com/) |
-| tailscale.txt (Tailscale MagicDNS / CGNAT) | [`individual` 分支](https://github.com/nuln/proxy-rules/tree/individual) 的 `tailscale.list` |
-| ai-coding.txt (编码 AI / Agent / AI 应用构建器) | [`individual` 分支](https://github.com/nuln/proxy-rules/tree/individual) 的 `ai-coding.list`（逐个实测） |
+| tailscale.txt (Tailscale MagicDNS / CGNAT) | `individual` branch: `tailscale.list` |
+| ai-coding.txt (coding AI / agents / AI app builders) | `individual` branch: `ai-coding.list` (verified domains) |
 
-> Build logic is equivalent to clash-rules' run.yml (`full:` = exact match, `domain:`/bare domain = suffix including itself), built directly from the sources above.
+> Build logic is equivalent to clash-rules' run.yml (`full:` = exact match,
+> `domain:`/bare domain = suffix including itself), built directly from the sources above.
 
 ## Client configurations (on this branch)
 
-| File | Client | What it is |
+| File | Client | Purpose |
 |---|---|---|
-| `mihomo.yaml` | mihomo (Clash Meta) | Standalone full example: example Reality nodes, DNS, `Default`(select)/`Auto`(url-test)/`Fallback`(fallback) groups + 17 `rule-providers` wired to the `mihomo` branch |
-| `mihomo.lite.yaml` | mihomo (Clash Meta) | Standalone lite example: same nodes/groups + 10 essential subscriptions, `include-all` group auto-absorbs your proxies |
-| `shadowrocket.conf` | Shadowrocket | Multi-node standalone config: example `[Proxy]` nodes + `Select`(default → Fallback)/`Auto`(url-latency-benchmark)/`Fallback`(available) groups, rules referencing the `shadowrocket` branch |
-| `shadowrocket.rule.module` | Shadowrocket | Rules-only module referencing the `shadowrocket` branch. Requires a policy group named **`Select`** in your config — modules cannot use the built-in `Proxy` policy |
+| `mihomo.yaml` | mihomo (Clash Meta) | Standalone full example: example Reality nodes, DNS, `Default`(select)/`Auto`(url-test)/`Fallback`(fallback) groups, and 17 `rule-providers` wired to the `mihomo` branch |
+| `mihomo.lite.yaml` | mihomo (Clash Meta) | Standalone lite example: same nodes/groups plus 10 essential rule providers; the `include-all` group auto-absorbs your proxies |
+| `shadowrocket.conf` | Shadowrocket | Multi-node standalone config: example `[Proxy]` nodes plus `Select`(default -> Fallback)/`Auto`(url-latency-benchmark)/`Fallback`(available) groups; rules reference the `shadowrocket` branch |
+| `shadowrocket.rule.module` | Shadowrocket | Rules-only module referencing the `shadowrocket` branch. Requires a policy group named `Select`; modules cannot use the built-in `Proxy` policy |
 
 ## Import URLs
 
-```
+```text
 mihomo:                    https://cdn.jsdelivr.net/gh/nuln/proxy-rules@master/mihomo.yaml
 mihomo (lite):             https://cdn.jsdelivr.net/gh/nuln/proxy-rules@master/mihomo.lite.yaml
 shadowrocket (conf):       https://cdn.jsdelivr.net/gh/nuln/proxy-rules@master/shadowrocket.conf
@@ -52,125 +58,54 @@ ai-coding (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/a
 ai-coding (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding.txt
 ```
 
-In Shadowrocket: Config → Modules/Profiles → `+` → paste URL.
+In Shadowrocket: Config -> Modules/Profiles -> `+` -> paste the URL.
 
-## 自定义规则（`individual` 分支）
+## Rule source and build workflow
 
-`mihomo` / `shadowrocket` 分支每天由 Actions **force-push**，直接改会被覆盖。自己的规则放在
-[`individual`](https://github.com/nuln/proxy-rules/tree/individual) 分支；两个构建 workflow 会
-checkout 它并自动合并，**不需要再改 workflow 文件**。
+Custom rules are maintained on the `individual` branch, not on `master`. See the
+[individual README](https://github.com/nuln/proxy-rules/blob/individual/README.md) for
+the file format, the existing lists, and the steps for adding a new list.
 
-`individual` 分支是**扁平**的，不放目录；根目录下每个 `*.list` 都是两端通用的规则文件：
+- The build checks out `individual` and merges its `*.list` files into both generated branches.
+- `individual/*.list` uses Surge-style rule lines without a policy.
+- A new list also needs a `RULE-SET` entry in the client configuration that should consume it.
+- Pushing to `individual` does not trigger a build. Run `mihomo.yml` / `shadowrocket.yml`
+  manually from Actions, or wait for the daily 08:00 Beijing time schedule.
+- Never edit `mihomo` or `shadowrocket` directly; CI force-pushes both branches.
 
-| 文件 | 格式 | 输出 |
-|---|---|---|
-| `individual/*.list` | Surge 规则行，**不写策略** | mihomo：转成 classical `payload`；Shadowrocket：原样规则 |
+## Tailscale notes
 
-`tailscale.list` 示例：
+`*.ts.net` MagicDNS names and `100.64.0.0/10` must be routed DIRECT. The rule source is
+`individual/tailscale.list`; the master configurations already reference the generated
+`tailscale.txt`:
 
-```text
-DOMAIN-SUFFIX,ts.net
-IP-CIDR,100.64.0.0/10,no-resolve
-```
+- mihomo: classical provider `tailscale`, `RULE-SET,tailscale,DIRECT`, MagicDNS nameserver
+  policy (`+.ts.net -> 100.100.100.100`), and a fake-IP filter for `+.ts.net`.
+- Shadowrocket: `RULE-SET` for `tailscale.txt`, plus `*.ts.net` and `100.64.0.0/10` in
+  `skip-proxy`.
 
-同一个文件会同时生成 `mihomo/<name>.txt` 和 `shadowrocket/<name>.txt`，文件名 = 源文件名
-（`foo.list` → `foo.txt`），不能和内置 15 个文件重名；重名会让构建失败。
+iOS allows only one active VPN. Tailscale must be the active VPN when using `*.ts.net`;
+Shadowrocket cannot be the active VPN at the same time. The rules still matter on macOS,
+or when Shadowrocket runs as a local proxy.
 
-规则里的策略由客户端配置决定（例如 `RULE-SET,tailscale,DIRECT`）。**新增一个文件**时，
-还需要在 `mihomo.yaml` 的 `rule-providers` / `rules` 或 `shadowrocket.conf` 的 `[Rule]`
-里加一行指向它——只是不用再改 workflow。如果只想加一条 DIRECT 规则，直接追加到
-`tailscale.list` 即可，客户端已经引用这个文件。
+### macOS: TUN and system proxy
 
-文件里请只使用 mihomo 和 Shadowrocket 都支持的规则类型（`DOMAIN-SUFFIX`、`IP-CIDR`、
-`IP-CIDR6` 等）。修改 `individual` 后，等每天 08:00 的定时构建，或在 Actions 页面手动
-`Run workflow`；push 到 `individual` 本身不会触发构建（该分支没有 workflow 文件）。
-生成分支里的文件不要直接改。
-
-## 编码 AI（`ai-coding.list`）
-
-`individual` 分支的 `ai-coding.list` 只收**编码相关**的服务，生成两端的
-`ai-coding.txt`。mihomo 用 classical provider + `RULE-SET,ai-coding,Default`，
-Shadowrocket 用 `RULE-SET,...,ai-coding.txt,Select`。
-
-2026-10-20 逐个实测通过；已排除已收购/停运/跳转到无关站点的域名：
-
-| 域名 | 排除原因 |
-|---|---|
-| `continue.dev` | 已被 Cursor 收购，站点只剩收购公告 |
-| `supermaven.com` | 已被 Cursor 收购，产品线不再维护 |
-| `tabnine.com` | 已跳转到 Tricentis，产品页不再独立 |
-| `roocode.com` | 已跳转到 Roomote，Roo Code Cloud 不再运营 |
-| `codegen.com` | 已并入 ClickUp，当前是内容导航站 |
-| `sweep.dev` | DNS 无解析 |
-| `grit.io` | 跳转文档站，不是编码 Agent |
-| `phind.com` | Cloudflare 403，且属于通用 AI 搜索 |
-
-国内 `trae.cn` 不放进代理列表；它由 `GEOIP,CN,DIRECT` / `MATCH,DIRECT` 直连。
-
-## Tailscale（`*.ts.net`）直连
-
-Tailscale 的 MagicDNS 域名、Serve 的 HTTPS，以及 tailnet 的 CGNAT 地址必须 **DIRECT**：
-
-- 公共 DNS/DoH 解析不了 `*.ts.net`，走代理会 `dns resolve failed`；
-- 代理节点也路由不到 `100.64.0.0/10`，DIRECT 拨号会 `i/o timeout`。
-
-`individual` 分支的 `tailscale.list` 会生成两个分支的 `tailscale.txt`：`mihomo` 分支是
-Clash **classical** payload，`shadowrocket` 分支是 Surge/SR 规则行。
-
-mihomo 的 `mihomo.yaml` / `mihomo.lite.yaml` 已加好：
-
-```yaml
-rule-providers:
-  tailscale:
-    type: http
-    behavior: classical
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
-    interval: 86400
-
-rules:
-  - RULE-SET,tailscale,DIRECT
-```
-
-`mihomo.yaml` 还加了 MagicDNS 策略（`mihomo.lite.yaml` 是片段，没有 `dns` 段，需要时自行合并）：
-
-```yaml
-dns:
-  nameserver-policy:
-    "+.ts.net":
-      - 100.100.100.100   # Tailscale MagicDNS
-  fake-ip-filter:
-    - "+.ts.net"
-```
-
-Shadowrocket 的 `shadowrocket.conf` / `shadowrocket.rule.module` 已加：
-
-```
-RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tailscale.txt,Direct
-```
-
-并在 `[General]` 的 `skip-proxy` 里加了 `*.ts.net, 100.64.0.0/10`。
-
-> iOS 同时只能有一个 VPN 生效：要用 `*.ts.net`，Tailscale 必须是当前 VPN；
-> Shadowrocket 无法和 Tailscale 同时作为 VPN 运行。规则的价值在于 macOS
-> （或 Shadowrocket 作为本地代理时）不让 tailnet 流量进代理。
-
-### macOS：TUN + 系统代理
-
-mihomo 开 TUN 时会把 DIRECT 出口绑定到物理网卡（`en0`），而 `100.64.0.0/10`
-只能走 Tailscale 的 `utun`；系统代理同时开着时，浏览器经 mihomo 访问
-`https://*.ts.net` 就会超时。除了上面的规则，还要让系统代理绕过：
+When mihomo runs in TUN mode, DIRECT traffic is bound to the physical interface (for
+example `en0`), while `100.64.0.0/10` is only reachable through the Tailscale `utun`
+interface. If the system proxy is also enabled, browsers using mihomo to access
+`https://*.ts.net` can time out. Add the following bypass to the active network service:
 
 ```bash
-# 对当前网络服务（示例为 Wi-Fi）追加 bypass；其他服务同理
 networksetup -setproxybypassdomains "Wi-Fi" \
   127.0.0.1/8 192.168.0.0/16 10.0.0.0/8 172.16.0.0/12 \
   localhost '*.local' '*.crashlytics.com' '<local>' '*.ts.net' 100.64.0.0/10
 ```
 
-或者开 TUN 时直接关掉系统代理（TUN 已经接管全部流量）。
+Alternatively, disable the system proxy while TUN mode is enabled; TUN already captures
+all traffic.
 
 ## Notes
 
-- Replace example node parameters (`server`, `uuid`, `public-key`) with real values; never commit real credentials.
-- mihomo `GEOIP,CN` uses its auto-managed geoip database by default.
+- Replace example node parameters (`server`, `uuid`, `public-key`) with real values.
+  Never commit real credentials.
+- mihomo `GEOIP,CN` uses its auto-managed GeoIP database by default.
