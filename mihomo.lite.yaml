@@ -70,17 +70,7 @@ rules:
   - RULE-SET,tailscale,DIRECT
   # private / LAN hostnames -> Direct (short-circuit)
   - RULE-SET,private,DIRECT
-  # Coding AI / agents: direct overrides must precede the ai-coding rule-set
-  - DOMAIN-SUFFIX,opencode-ai.com,DIRECT
-  - DOMAIN-SUFFIX,cline.bot,DIRECT
-  - DOMAIN-SUFFIX,aider.chat,DIRECT
-  - DOMAIN-SUFFIX,factory.com,DIRECT
-  - DOMAIN-SUFFIX,augmentcode.com,DIRECT
-  - DOMAIN-SUFFIX,ampcode.com,DIRECT
-  - DOMAIN-SUFFIX,replit.com,DIRECT
-  - DOMAIN-SUFFIX,stackblitz.com,DIRECT
-  - DOMAIN-SUFFIX,firebase.studio,DIRECT
-  # Remaining coding AI / agents -> Select (your nodes)
+  # Coding AI / agents -> Select (your nodes)
   - RULE-SET,ai-coding,Select
   # blocked domains -> Select (your nodes)
   - RULE-SET,gfw,Select
