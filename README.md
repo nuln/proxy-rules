@@ -33,6 +33,26 @@ IP-CIDR6,fd7a:115c:a1e0::/48,no-resolve
 workflow。新建 `foo.list` 也可以，但需要在 `mihomo.yaml` / `shadowrocket.conf`
 里加一条 `RULE-SET,foo,DIRECT`。
 
+## 编码 AI
+
+`ai-coding.list` 只放**编码相关**的 AI / Agent / AI 应用构建器，客户端按
+`RULE-SET,ai-coding,Default`（mihomo）和 `RULE-SET,...,ai-coding.txt,Select`
+（Shadowrocket）走代理。2026-10-20 逐个实测通过；以下域名**没有**加入：
+
+| 域名 | 不加入的原因 |
+|---|---|
+| `continue.dev` | 已被 Cursor 收购，站点只剩收购公告 |
+| `supermaven.com` | 已被 Cursor 收购，产品线不再维护 |
+| `tabnine.com` | 已跳转到 Tricentis，产品页不再独立 |
+| `roocode.com` | 已跳转到 Roomote，Roo Code Cloud 不再运营 |
+| `codegen.com` | 已并入 ClickUp，当前是内容导航站 |
+| `sweep.dev` | DNS 无解析，站点不存在 |
+| `grit.io` | 跳转文档站，不是编码 Agent 服务 |
+| `phind.com` | Cloudflare 403，且属于通用 AI 搜索而非编码 Agent |
+
+国内 `trae.cn` 不放进这个代理列表；它由 `GEOIP,CN,DIRECT` / `MATCH,DIRECT` 直连。
+
+
 ## 注意
 
 - 输出文件名 = 源文件名（`foo.list` → `foo.txt`），不能和内置 15 个文件重名。

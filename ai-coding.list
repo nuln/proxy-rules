@@ -1,0 +1,32 @@
+# 编码 AI / Agent（2026-10-20 逐个实测通过）
+# 只收编码相关服务；策略由客户端 RULE-SET 决定，默认走 Default/Select。
+# 已排除：已收购/停运/跳转到无关站点的域名，见 README。
+
+# Coding agents / IDE
+DOMAIN-SUFFIX,antigravity.google
+DOMAIN-SUFFIX,opencode.ai
+DOMAIN-SUFFIX,opencode-ai.com
+DOMAIN-SUFFIX,models.dev
+DOMAIN-SUFFIX,commandcode.ai
+DOMAIN-SUFFIX,cline.bot
+DOMAIN-SUFFIX,aider.chat
+DOMAIN-SUFFIX,qodo.ai
+DOMAIN-SUFFIX,blackbox.ai
+DOMAIN-SUFFIX,refact.ai
+DOMAIN-SUFFIX,factory.com
+DOMAIN-SUFFIX,factory.ai
+DOMAIN-SUFFIX,augmentcode.com
+DOMAIN-SUFFIX,ampcode.com
+DOMAIN-SUFFIX,zed.dev
+DOMAIN-SUFFIX,warp.dev
+DOMAIN-SUFFIX,trae.ai
+
+# AI app / website builders
+DOMAIN-SUFFIX,replit.com
+DOMAIN-SUFFIX,lovable.dev
+DOMAIN-SUFFIX,bolt.new
+DOMAIN-SUFFIX,stackblitz.com
+DOMAIN-SUFFIX,v0.app
+DOMAIN-SUFFIX,v0.dev
+DOMAIN-SUFFIX,firebase.studio
+DOMAIN-SUFFIX,openhands.dev
