@@ -30,10 +30,10 @@ Self-hosted dual-client rule generation repository: builds rules directly from t
 
 | File | Client | What it is |
 |---|---|---|
-| `mihomo.yaml` | mihomo (Clash Meta) | Standalone full example: example Reality nodes, DNS, `Default`(select)/`Auto`(url-test)/`Fallback`(fallback) groups + 16 `rule-providers` wired to the `mihomo` branch |
-| `mihomo.lite.yaml` | mihomo (Clash Meta) | Standalone lite example: same nodes/groups + 11 essential subscriptions, `include-all` group auto-absorbs your proxies |
+| `mihomo.yaml` | mihomo (Clash Meta) | Standalone full example: example Reality nodes, DNS, `Default`(select)/`Auto`(url-test)/`Fallback`(fallback) groups + 17 `rule-providers` wired to the `mihomo` branch |
+| `mihomo.lite.yaml` | mihomo (Clash Meta) | Standalone lite example: same nodes/groups + 10 essential subscriptions, `include-all` group auto-absorbs your proxies |
 | `shadowrocket.conf` | Shadowrocket | Multi-node standalone config: example `[Proxy]` nodes + `Select`(default → Fallback)/`Auto`(url-latency-benchmark)/`Fallback`(available) groups, rules referencing the `shadowrocket` branch |
-| `shadowrocket.rule.module` | Shadowrocket | Rules-only module referencing the `shadowrocket` branch. Requires a policy group named **`Default`** in your config — modules cannot use the built-in `Proxy` policy |
+| `shadowrocket.rule.module` | Shadowrocket | Rules-only module referencing the `shadowrocket` branch. Requires a policy group named **`Select`** in your config — modules cannot use the built-in `Proxy` policy |
 
 ## Import URLs
 
