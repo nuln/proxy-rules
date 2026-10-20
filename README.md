@@ -22,6 +22,7 @@ Self-hosted dual-client rule generation repository: builds rules directly from t
 | china_ip_list.txt | [17mon/china_ip_list](https://github.com/17mon/china_ip_list) |
 | security.txt (malware/mining/phishing, deduped against all core sets) | [URLhaus](https://urlhaus.abuse.ch/) / [adblock-nocoin](https://github.com/hoshsadiq/adblock-nocoin-list) / [Phishing Army](https://phishing.army/) / [OpenPhish](https://openphish.com/) |
 | tailscale.txt (Tailscale MagicDNS / CGNAT) | [`individual` 分支](https://github.com/nuln/proxy-rules/tree/individual) 的 `tailscale.list` |
+| ai-coding.txt (编码 AI / Agent / AI 应用构建器) | [`individual` 分支](https://github.com/nuln/proxy-rules/tree/individual) 的 `ai-coding.list`（逐个实测） |
 
 > Build logic is equivalent to clash-rules' run.yml (`full:` = exact match, `domain:`/bare domain = suffix including itself), built directly from the sources above.
 
@@ -47,6 +48,8 @@ rule sets (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowro
 
 tailscale (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
 tailscale (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tailscale.txt
+ai-coding (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding.txt
+ai-coding (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding.txt
 ```
 
 In Shadowrocket: Config → Modules/Profiles → `+` → paste URL.
@@ -82,6 +85,27 @@ IP-CIDR,100.64.0.0/10,no-resolve
 `IP-CIDR6` 等）。修改 `individual` 后，等每天 08:00 的定时构建，或在 Actions 页面手动
 `Run workflow`；push 到 `individual` 本身不会触发构建（该分支没有 workflow 文件）。
 生成分支里的文件不要直接改。
+
+## 编码 AI（`ai-coding.list`）
+
+`individual` 分支的 `ai-coding.list` 只收**编码相关**的服务，生成两端的
+`ai-coding.txt`。mihomo 用 classical provider + `RULE-SET,ai-coding,Default`，
+Shadowrocket 用 `RULE-SET,...,ai-coding.txt,Select`。
+
+2026-10-20 逐个实测通过；已排除已收购/停运/跳转到无关站点的域名：
+
+| 域名 | 排除原因 |
+|---|---|
+| `continue.dev` | 已被 Cursor 收购，站点只剩收购公告 |
+| `supermaven.com` | 已被 Cursor 收购，产品线不再维护 |
+| `tabnine.com` | 已跳转到 Tricentis，产品页不再独立 |
+| `roocode.com` | 已跳转到 Roomote，Roo Code Cloud 不再运营 |
+| `codegen.com` | 已并入 ClickUp，当前是内容导航站 |
+| `sweep.dev` | DNS 无解析 |
+| `grit.io` | 跳转文档站，不是编码 Agent |
+| `phind.com` | Cloudflare 403，且属于通用 AI 搜索 |
+
+国内 `trae.cn` 不放进代理列表；它由 `GEOIP,CN,DIRECT` / `MATCH,DIRECT` 直连。
 
 ## Tailscale（`*.ts.net`）直连
 

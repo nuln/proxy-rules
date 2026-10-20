@@ -1,10 +1,11 @@
 #!name = proxy-rules example
 #!desc = Rules from nuln/proxy-rules @shadowrocket branch, updated daily. Requires a policy group named Select (rename to match your own).
-#!date = 2026-08-25
+#!date = 2026-10-20
 
 [Rule]
 # Tailscale FIRST: ts.net (MagicDNS) + 100.64.0.0/10 (CGNAT) must be DIRECT
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tailscale.txt,Direct
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding.txt,Select
 DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/private.txt,Direct
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/lancidr.txt,Direct,no-resolve
 DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/reject.txt,Reject

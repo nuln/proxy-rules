@@ -121,6 +121,13 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
     interval: 86400
+  # 编码 AI / Agent / AI 应用构建器
+  ai-coding:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding.txt
+    interval: 86400
   reject:
     type: http
     behavior: domain
@@ -225,6 +232,8 @@ rules:
   # Apple / iCloud reachable directly
   - RULE-SET,icloud,DIRECT
   - RULE-SET,apple,DIRECT
+  # Coding AI / agents -> proxy
+  - RULE-SET,ai-coding,Default
   # Google
   - RULE-SET,google,Default
   # Telegram IP ranges

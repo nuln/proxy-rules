@@ -10,6 +10,12 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
     interval: 86400
+  ai-coding:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding.txt
+    interval: 86400
   private:
     type: http
     behavior: domain
@@ -64,6 +70,8 @@ rules:
   - RULE-SET,tailscale,DIRECT
   # private / LAN hostnames -> Direct (short-circuit)
   - RULE-SET,private,DIRECT
+  # Coding AI / agents -> Default (your nodes)
+  - RULE-SET,ai-coding,Default
   # blocked domains -> Default (your nodes)
   - RULE-SET,gfw,Default
   - RULE-SET,greatfire,Default
