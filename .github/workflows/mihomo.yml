@@ -149,7 +149,7 @@ jobs:
                       continue
                   parts = l.split()
                   if len(parts) > 1 and parts[0].replace(".", "").isdigit():
-                      l = parts[-1]  # hosts 格式:0.0.0.0 domain
+                      l = parts[-1]  # hosts format: 0.0.0.0 domain
                   if l.startswith(("http://", "https://")):
                       u = l.split("/", 3)
                       l = u[2] if len(u) > 2 else ""
