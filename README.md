@@ -41,33 +41,11 @@ The master client configurations already reference the generated `tailscale.txt`
 
 ### `ai-coding.list`
 
-One category file containing all coding AI, coding agents, and AI app builders.
-Every domain was tested on 2026-10-20. The list is not split by routing result.
+Coding AI, coding agents, and AI app builders only. Every domain was tested on
+2026-10-20. The generated rules are proxied:
 
-A `RULE-SET` applies one policy to the whole remote file, so mixed routing is handled
-in the client configuration, not by creating `ai-coding-direct` / `ai-coding-proxy`
-files:
-
-- mihomo: explicit `DOMAIN-SUFFIX,...,DIRECT` overrides, then
-  `RULE-SET,ai-coding,Select`
-- Shadowrocket: explicit `DOMAIN-SUFFIX,...,Direct` overrides, then
-  `RULE-SET,...,ai-coding.txt,Select`
-
-Direct overrides currently in the master configs:
-
-```text
-opencode-ai.com
-cline.bot
-aider.chat
-factory.com
-augmentcode.com
-ampcode.com
-replit.com
-stackblitz.com
-firebase.studio
-```
-
-All remaining domains in `ai-coding.list` go through the `Select` proxy group.
+- mihomo: `RULE-SET,ai-coding,Select`
+- Shadowrocket: `RULE-SET,...,ai-coding.txt,Select`
 
 Domains intentionally excluded:
 
@@ -82,7 +60,7 @@ Domains intentionally excluded:
 | `grit.io` | Redirects to documentation; not a coding agent service |
 | `phind.com` | Cloudflare 403; general AI search, not a coding agent |
 
-`trae.cn` is intentionally not in `ai-coding.list`. It is routed DIRECT by
+`trae.cn` is intentionally not in the proxy list. It is routed DIRECT by
 `GEOIP,CN,DIRECT` / `MATCH,DIRECT`.
 
 ## Adding a new list
