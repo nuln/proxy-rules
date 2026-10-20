@@ -19,6 +19,13 @@ dns:
   nameserver:
     - tls://223.5.5.5
     - https://doh.pub
+  # MagicDNS 只存在于 Tailscale 的 100.100.100.100，公共 DoH 解析不了 *.ts.net
+  nameserver-policy:
+    "+.ts.net":
+      - 100.100.100.100
+  # 不要让 fake-ip 覆盖 ts.net，DIRECT 时需要真实 tailnet IP
+  fake-ip-filter:
+    - "+.ts.net"
 
 
 proxies:
@@ -107,6 +114,13 @@ proxy-groups:
 
 
 rule-providers:
+  # 混合域名 + CIDR 的 classical 规则集：Tailscale 的 MagicDNS / Serve / CGNAT
+  tailscale:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
+    interval: 86400
   reject:
     type: http
     behavior: domain
@@ -199,6 +213,9 @@ rule-providers:
     interval: 86400
 
 rules:
+  # Tailscale 必须最先直连：ts.net 是 MagicDNS 私有域名，
+  # 100.64.0.0/10 是 CGNAT/tailnet，代理节点既解析不了也连不上。
+  - RULE-SET,tailscale,DIRECT
   # LAN & private
   - RULE-SET,private,DIRECT
   - RULE-SET,lancidr,DIRECT,no-resolve

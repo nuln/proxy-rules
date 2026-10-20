@@ -157,6 +157,20 @@ jobs:
 
           (OUT / "security.txt").write_text(payload(sec_entries), encoding="utf-8")
           print(f"SEC  {'security.txt':<22}{len(seen):>8} total")
+
+          # ---- Tailscale: ts.net (MagicDNS) + CGNAT must bypass the proxy ----
+          (OUT / "tailscale.txt").write_text(
+              "payload:\n"
+              "  - 'DOMAIN-SUFFIX,ts.net'\n"
+              "  - 'DOMAIN-SUFFIX,tailscale.com'\n"
+              "  - 'DOMAIN-SUFFIX,tailscale.io'\n"
+              "  - 'IP-CIDR,100.64.0.0/10,no-resolve'\n"
+              "  - 'IP-CIDR6,fd7a:115c:a1e0::/48,no-resolve'\n",
+              encoding="utf-8",
+          )
+          produced.add("tailscale.txt")
+          print("OK   tailscale.txt")
+
           for p in sorted(OUT.iterdir()):
               if p.name not in produced:
                   print(f"DEL  {p.name}")
