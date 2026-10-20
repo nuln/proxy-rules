@@ -15,11 +15,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout custom rules
+      - name: Checkout individual rules
         uses: actions/checkout@v4
         with:
-          ref: custom
-          path: custom
+          ref: individual
+          path: individual
           persist-credentials: false
 
       # Build logic fully inlined: pull original upstream sources,
@@ -27,7 +27,7 @@ jobs:
       - name: Build rules
         run: |
           python3 <<'PYEOF'
-          import shutil, re, time, urllib.request
+          import re, time, urllib.request
           from pathlib import Path
 
           OUT = Path.cwd() / "out"
@@ -165,43 +165,24 @@ jobs:
           (OUT / "security.txt").write_text(ruleset(sec_entries), encoding="utf-8")
           print(f"SEC  {'security.txt':<22}{len(seen):>8} total")
 
-          # ---- custom rules from the `custom` branch ----
-          CUSTOM = Path.cwd() / "custom"
-          if not CUSTOM.is_dir():
-              raise SystemExit("custom branch not checked out; expected ./custom")
+          # ---- universal rules from the `individual` branch ----
+          INDIVIDUAL = Path.cwd() / "individual"
+          if not INDIVIDUAL.is_dir():
+              raise SystemExit("individual branch not checked out; expected ./individual")
 
-          def custom_name(name):
-              if name in produced:
-                  raise SystemExit(f"custom rule file collides with built-in: {name}")
-              return name
-
-          def write_rules(src, dst):
-              lines = [l.strip() for l in src.read_text(encoding="utf-8").splitlines()
+          # individual/*.list: plain Surge-style rule lines, shared by every client.
+          for f in sorted(INDIVIDUAL.glob("*.list")):
+              lines = [l.strip() for l in f.read_text(encoding="utf-8").splitlines()
                        if l.strip() and not l.lstrip().startswith("#")]
               if not lines:
-                  return 0
-              dst.write_text("\n".join(lines) + "\n", encoding="utf-8")
-              return len(lines)
-
-          # shared/*.list: 两端通用，原样输出为 .txt
-          for f in sorted((CUSTOM / "shared").glob("*.list")):
-              name = custom_name(f.stem + ".txt")
-              n = write_rules(f, OUT / name)
-              if not n:
                   print(f"SKIP {f.name} (empty)")
                   continue
+              name = f.stem + ".txt"
+              if name in produced:
+                  raise SystemExit(f"individual rule file collides with built-in: {name}")
+              (OUT / name).write_text("\n".join(lines) + "\n", encoding="utf-8")
               produced.add(name)
-              print(f"CUSTOM {name:<20}{n:>8} rules")
-
-          # shadowrocket/*.txt: SR 专用规则
-          for f in sorted((CUSTOM / "shadowrocket").glob("*.txt")):
-              name = custom_name(f.name)
-              n = write_rules(f, OUT / name)
-              if not n:
-                  print(f"SKIP {f.name} (empty)")
-                  continue
-              produced.add(name)
-              print(f"CUSTOM {name:<20}{n:>8} rules")
+              print(f"INDIV {name:<20}{len(lines):>8} rules")
 
           for p in sorted(OUT.iterdir()):
               if p.name not in produced:

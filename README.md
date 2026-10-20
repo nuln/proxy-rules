@@ -7,9 +7,9 @@ Self-hosted dual-client rule generation repository: builds rules directly from t
 | Branch | Content |
 |---|---|
 | `master` | Two workflows (build logic fully inlined) + client configuration examples (`mihomo.yaml`, `mihomo.lite.yaml`, `shadowrocket.conf`, `shadowrocket.rule.module`) |
-| `custom` | 自定义规则源（`shared/*.list`、`mihomo/*`、`shadowrocket/*`）；Actions 只读，不会被覆盖 |
-| `mihomo` | Built-in 15 rule files + custom rules from `custom` (clash payload, flat root), force-pushed daily |
-| `shadowrocket` | Built-in 15 rule files + custom rules from `custom` (Surge/SR format, flat root), force-pushed daily |
+| `individual` | 扁平的自定义规则源：根目录 `*.list`，mihomo 和 Shadowrocket 共用；Actions 只读，不会被覆盖 |
+| `mihomo` | Built-in 15 rule files + `individual/*.list` (clash payload, flat root), force-pushed daily |
+| `shadowrocket` | Built-in 15 rule files + `individual/*.list` (Surge/SR format, flat root), force-pushed daily |
 
 ## Data sources (pulled directly from origin)
 
@@ -21,7 +21,7 @@ Self-hosted dual-client rule generation repository: builds rules directly from t
 | cncidr/lancidr/telegramcidr.txt | [Loyalsoldier/geoip](https://github.com/Loyalsoldier/geoip) |
 | china_ip_list.txt | [17mon/china_ip_list](https://github.com/17mon/china_ip_list) |
 | security.txt (malware/mining/phishing, deduped against all core sets) | [URLhaus](https://urlhaus.abuse.ch/) / [adblock-nocoin](https://github.com/hoshsadiq/adblock-nocoin-list) / [Phishing Army](https://phishing.army/) / [OpenPhish](https://openphish.com/) |
-| tailscale.txt (Tailscale MagicDNS / CGNAT) | [`custom` 分支](https://github.com/nuln/proxy-rules/tree/custom) 的 `shared/tailscale.list` |
+| tailscale.txt (Tailscale MagicDNS / CGNAT) | [`individual` 分支](https://github.com/nuln/proxy-rules/tree/individual) 的 `tailscale.list` |
 
 > Build logic is equivalent to clash-rules' run.yml (`full:` = exact match, `domain:`/bare domain = suffix including itself), built directly from the sources above.
 
@@ -51,35 +51,37 @@ tailscale (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowro
 
 In Shadowrocket: Config → Modules/Profiles → `+` → paste URL.
 
-## 自定义规则（`custom` 分支）
+## 自定义规则（`individual` 分支）
 
 `mihomo` / `shadowrocket` 分支每天由 Actions **force-push**，直接改会被覆盖。自己的规则放在
-[`custom`](https://github.com/nuln/proxy-rules/tree/custom) 分支；两个构建 workflow 会
+[`individual`](https://github.com/nuln/proxy-rules/tree/individual) 分支；两个构建 workflow 会
 checkout 它并自动合并，**不需要再改 workflow 文件**。
 
-| `custom` 路径 | 格式 | 输出 |
-|---|---|---|
-| `shared/*.list` | Surge 规则行，**不写策略** | mihomo：转成 classical `payload`；Shadowrocket：原样规则 |
-| `mihomo/*.txt` / `*.yaml` | 完整 Clash `payload` YAML，**不写策略** | 原样复制到 `mihomo` 分支 |
-| `shadowrocket/*.txt` | Surge 规则行，**不写策略** | 原样复制到 `shadowrocket` 分支 |
+`individual` 分支是**扁平**的，不放目录；根目录下每个 `*.list` 都是两端通用的规则文件：
 
-`shared/tailscale.list` 示例：
+| 文件 | 格式 | 输出 |
+|---|---|---|
+| `individual/*.list` | Surge 规则行，**不写策略** | mihomo：转成 classical `payload`；Shadowrocket：原样规则 |
+
+`tailscale.list` 示例：
 
 ```text
 DOMAIN-SUFFIX,ts.net
 IP-CIDR,100.64.0.0/10,no-resolve
 ```
 
-输出文件名 = 源文件名（`shared/foo.list` → `foo.txt`），不能和内置 15 个文件重名；
-重名会让构建失败，避免静默覆盖。
+同一个文件会同时生成 `mihomo/<name>.txt` 和 `shadowrocket/<name>.txt`，文件名 = 源文件名
+（`foo.list` → `foo.txt`），不能和内置 15 个文件重名；重名会让构建失败。
 
-规则里的策略由客户端配置决定（例如 `RULE-SET,tailscale,DIRECT`）。**新增一个独立文件**时，
+规则里的策略由客户端配置决定（例如 `RULE-SET,tailscale,DIRECT`）。**新增一个文件**时，
 还需要在 `mihomo.yaml` 的 `rule-providers` / `rules` 或 `shadowrocket.conf` 的 `[Rule]`
 里加一行指向它——只是不用再改 workflow。如果只想加一条 DIRECT 规则，直接追加到
-`shared/tailscale.list` 即可，客户端已经引用这个文件。
+`tailscale.list` 即可，客户端已经引用这个文件。
 
-修改 `custom` 后，等每天 08:00 的定时构建，或在 Actions 页面手动 `Run workflow`；
-push 到 `custom` 本身不会触发构建（该分支没有 workflow 文件）。生成分支里的文件不要直接改。
+文件里请只使用 mihomo 和 Shadowrocket 都支持的规则类型（`DOMAIN-SUFFIX`、`IP-CIDR`、
+`IP-CIDR6` 等）。修改 `individual` 后，等每天 08:00 的定时构建，或在 Actions 页面手动
+`Run workflow`；push 到 `individual` 本身不会触发构建（该分支没有 workflow 文件）。
+生成分支里的文件不要直接改。
 
 ## Tailscale（`*.ts.net`）直连
 
@@ -88,7 +90,7 @@ Tailscale 的 MagicDNS 域名、Serve 的 HTTPS，以及 tailnet 的 CGNAT 地�
 - 公共 DNS/DoH 解析不了 `*.ts.net`，走代理会 `dns resolve failed`；
 - 代理节点也路由不到 `100.64.0.0/10`，DIRECT 拨号会 `i/o timeout`。
 
-`custom` 分支的 `shared/tailscale.list` 会生成两个分支的 `tailscale.txt`：`mihomo` 分支是
+`individual` 分支的 `tailscale.list` 会生成两个分支的 `tailscale.txt`：`mihomo` 分支是
 Clash **classical** payload，`shadowrocket` 分支是 Surge/SR 规则行。
 
 mihomo 的 `mihomo.yaml` / `mihomo.lite.yaml` 已加好：
