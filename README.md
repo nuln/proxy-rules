@@ -36,7 +36,7 @@ force-pushed by CI.
 
 | File | Client | Purpose |
 |---|---|---|
-| `mihomo.yaml` | mihomo (Clash Meta) | Standalone full example: example Reality nodes, DNS, `Default`(select)/`Auto`(url-test)/`Fallback`(fallback) groups, and 17 `rule-providers` wired to the `mihomo` branch |
+| `mihomo.yaml` | mihomo (Clash Meta) | Standalone full example: example Reality nodes, DNS, `Select`(select)/`Auto`(url-test)/`Fallback`(fallback) groups, and 17 `rule-providers` wired to the `mihomo` branch |
 | `mihomo.lite.yaml` | mihomo (Clash Meta) | Standalone lite example: same nodes/groups plus 10 essential rule providers; the `include-all` group auto-absorbs your proxies |
 | `shadowrocket.conf` | Shadowrocket | Multi-node standalone config: example `[Proxy]` nodes plus `Select`(default -> Fallback)/`Auto`(url-latency-benchmark)/`Fallback`(available) groups; rules reference the `shadowrocket` branch |
 | `shadowrocket.rule.module` | Shadowrocket | Rules-only module referencing the `shadowrocket` branch. Requires a policy group named `Select`; modules cannot use the built-in `Proxy` policy |

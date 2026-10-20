@@ -1,5 +1,5 @@
 proxy-groups:
-- name: Default
+- name: Select
   type: select
   include-all: true
 
@@ -70,15 +70,15 @@ rules:
   - RULE-SET,tailscale,DIRECT
   # private / LAN hostnames -> Direct (short-circuit)
   - RULE-SET,private,DIRECT
-  # Coding AI / agents -> Default (your nodes)
-  - RULE-SET,ai-coding,Default
-  # blocked domains -> Default (your nodes)
-  - RULE-SET,gfw,Default
-  - RULE-SET,greatfire,Default
-  - RULE-SET,tld-not-cn,Default
-  - RULE-SET,proxy,Default
+  # Coding AI / agents -> Select (your nodes)
+  - RULE-SET,ai-coding,Select
+  # blocked domains -> Select (your nodes)
+  - RULE-SET,gfw,Select
+  - RULE-SET,greatfire,Select
+  - RULE-SET,tld-not-cn,Select
+  - RULE-SET,proxy,Select
   # Telegram IP ranges
-  - RULE-SET,telegramcidr,Default,no-resolve
+  - RULE-SET,telegramcidr,Select,no-resolve
   # LAN IP ranges
   - RULE-SET,lancidr,DIRECT,no-resolve
   # China IP ranges + GeoIP fallback

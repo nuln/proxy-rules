@@ -87,7 +87,7 @@ proxies:
     public-key: PBK_REPLACE_ME
 
 proxy-groups:
-- name: Default
+- name: Select
   type: select
   proxies:
   - Fallback
@@ -233,16 +233,16 @@ rules:
   - RULE-SET,icloud,DIRECT
   - RULE-SET,apple,DIRECT
   # Coding AI / agents -> proxy
-  - RULE-SET,ai-coding,Default
+  - RULE-SET,ai-coding,Select
   # Google
-  - RULE-SET,google,Default
+  - RULE-SET,google,Select
   # Telegram IP ranges
-  - RULE-SET,telegramcidr,Default,no-resolve
+  - RULE-SET,telegramcidr,Select,no-resolve
   # proxied domains
-  - RULE-SET,gfw,Default
-  - RULE-SET,greatfire,Default
-  - RULE-SET,tld-not-cn,Default
-  - RULE-SET,proxy,Default
+  - RULE-SET,gfw,Select
+  - RULE-SET,greatfire,Select
+  - RULE-SET,tld-not-cn,Select
+  - RULE-SET,proxy,Select
   # China domains
   - RULE-SET,direct,DIRECT
   # China IP ranges (two sources) + GeoIP fallback
