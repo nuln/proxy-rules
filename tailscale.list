@@ -1,0 +1,7 @@
+# Tailscale MagicDNS / Serve / CGNAT
+# 扁平规则文件：mihomo 会转成 classical payload，Shadowrocket 原样输出。
+DOMAIN-SUFFIX,ts.net
+DOMAIN-SUFFIX,tailscale.com
+DOMAIN-SUFFIX,tailscale.io
+IP-CIDR,100.64.0.0/10,no-resolve
+IP-CIDR6,fd7a:115c:a1e0::/48,no-resolve
