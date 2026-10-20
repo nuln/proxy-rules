@@ -15,12 +15,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout custom rules
+        uses: actions/checkout@v4
+        with:
+          ref: custom
+          path: custom
+          persist-credentials: false
+
       # Build logic fully inlined: pull original upstream sources,
       # generate clash payload format, force-push to the mihomo branch
       - name: Build rules
         run: |
           python3 <<'PYEOF'
-          import re, time, urllib.request
+          import json, re, shutil, time, urllib.request
           from pathlib import Path
 
           OUT = Path.cwd() / "out"
@@ -158,18 +165,41 @@ jobs:
           (OUT / "security.txt").write_text(payload(sec_entries), encoding="utf-8")
           print(f"SEC  {'security.txt':<22}{len(seen):>8} total")
 
-          # ---- Tailscale: ts.net (MagicDNS) + CGNAT must bypass the proxy ----
-          (OUT / "tailscale.txt").write_text(
-              "payload:\n"
-              "  - 'DOMAIN-SUFFIX,ts.net'\n"
-              "  - 'DOMAIN-SUFFIX,tailscale.com'\n"
-              "  - 'DOMAIN-SUFFIX,tailscale.io'\n"
-              "  - 'IP-CIDR,100.64.0.0/10,no-resolve'\n"
-              "  - 'IP-CIDR6,fd7a:115c:a1e0::/48,no-resolve'\n",
-              encoding="utf-8",
-          )
-          produced.add("tailscale.txt")
-          print("OK   tailscale.txt")
+          # ---- custom rules from the `custom` branch ----
+          CUSTOM = Path.cwd() / "custom"
+          if not CUSTOM.is_dir():
+              raise SystemExit("custom branch not checked out; expected ./custom")
+
+          def custom_name(name):
+              if name in produced:
+                  raise SystemExit(f"custom rule file collides with built-in: {name}")
+              return name
+
+          # shared/*.list: Surge-style rule lines -> Clash classical payload
+          for f in sorted((CUSTOM / "shared").glob("*.list")):
+              lines = [l.strip() for l in f.read_text(encoding="utf-8").splitlines()
+                       if l.strip() and not l.lstrip().startswith("#")]
+              if not lines:
+                  print(f"SKIP {f.name} (empty)")
+                  continue
+              name = custom_name(f.stem + ".txt")
+              (OUT / name).write_text(
+                  "payload:\n" + "".join(
+                      f"  - {json.dumps(line, ensure_ascii=False)}\n" for line in lines
+                  ),
+                  encoding="utf-8",
+              )
+              produced.add(name)
+              print(f"CUSTOM {name:<20}{len(lines):>8} rules")
+
+          # mihomo/*.txt|*.yaml: already a full payload, copy as-is
+          for f in sorted((CUSTOM / "mihomo").glob("*")):
+              if not f.is_file() or f.suffix not in (".txt", ".yaml", ".yml"):
+                  continue
+              name = custom_name(f.name)
+              shutil.copyfile(f, OUT / name)
+              produced.add(name)
+              print(f"CUSTOM {name:<20}{'copied':>8}")
 
           for p in sorted(OUT.iterdir()):
               if p.name not in produced:
