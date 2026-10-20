@@ -121,12 +121,18 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
     interval: 86400
-  # Coding AI / agents / AI app builders
-  ai-coding:
+  # Coding AI / agents / AI app builders: direct list first, then proxy list
+  ai-coding-direct:
     type: http
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding.txt
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-direct.txt
+    interval: 86400
+  ai-coding-proxy:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-proxy.txt
     interval: 86400
   reject:
     type: http
@@ -232,8 +238,9 @@ rules:
   # Apple / iCloud reachable directly
   - RULE-SET,icloud,DIRECT
   - RULE-SET,apple,DIRECT
-  # Coding AI / agents -> proxy
-  - RULE-SET,ai-coding,Select
+  # Coding AI / agents: direct first, then proxy
+  - RULE-SET,ai-coding-direct,DIRECT
+  - RULE-SET,ai-coding-proxy,Select
   # Google
   - RULE-SET,google,Select
   # Telegram IP ranges

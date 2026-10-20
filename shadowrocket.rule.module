@@ -5,7 +5,9 @@
 [Rule]
 # Tailscale FIRST: ts.net (MagicDNS) + 100.64.0.0/10 (CGNAT) must be DIRECT
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tailscale.txt,Direct
-RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding.txt,Select
+# Coding AI / agents: direct first, then proxy
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-direct.txt,Direct
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-proxy.txt,Select
 DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/private.txt,Direct
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/lancidr.txt,Direct,no-resolve
 DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/reject.txt,Reject

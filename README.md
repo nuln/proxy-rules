@@ -27,7 +27,7 @@ force-pushed by CI.
 | china_ip_list.txt | [17mon/china_ip_list](https://github.com/17mon/china_ip_list) |
 | security.txt (malware/mining/phishing, deduped against all core sets) | [URLhaus](https://urlhaus.abuse.ch/) / [adblock-nocoin](https://github.com/hoshsadiq/adblock-nocoin-list) / [Phishing Army](https://phishing.army/) / [OpenPhish](https://openphish.com/) |
 | tailscale.txt (Tailscale MagicDNS / CGNAT) | `individual` branch: `tailscale.list` |
-| ai-coding.txt (coding AI / agents / AI app builders) | `individual` branch: `ai-coding.list` (verified domains) |
+| ai-coding-direct.txt / ai-coding-proxy.txt (coding AI / agents / AI app builders) | `individual` branch: `ai-coding-direct.list` / `ai-coding-proxy.list` (verified domains) |
 
 > Build logic is equivalent to clash-rules' run.yml (`full:` = exact match,
 > `domain:`/bare domain = suffix including itself), built directly from the sources above.
@@ -36,8 +36,8 @@ force-pushed by CI.
 
 | File | Client | Purpose |
 |---|---|---|
-| `mihomo.yaml` | mihomo (Clash Meta) | Standalone full example: example Reality nodes, DNS, `Select`(select)/`Auto`(url-test)/`Fallback`(fallback) groups, and 17 `rule-providers` wired to the `mihomo` branch |
-| `mihomo.lite.yaml` | mihomo (Clash Meta) | Standalone lite example: same nodes/groups plus 10 essential rule providers; the `include-all` group auto-absorbs your proxies |
+| `mihomo.yaml` | mihomo (Clash Meta) | Standalone full example: example Reality nodes, DNS, `Select`(select)/`Auto`(url-test)/`Fallback`(fallback) groups, and 18 `rule-providers` wired to the `mihomo` branch |
+| `mihomo.lite.yaml` | mihomo (Clash Meta) | Standalone lite example: same nodes/groups plus 11 essential rule providers; the `include-all` group auto-absorbs your proxies |
 | `shadowrocket.conf` | Shadowrocket | Multi-node standalone config: example `[Proxy]` nodes plus `Select`(default -> Fallback)/`Auto`(url-latency-benchmark)/`Fallback`(available) groups; rules reference the `shadowrocket` branch |
 | `shadowrocket.rule.module` | Shadowrocket | Rules-only module referencing the `shadowrocket` branch. Requires a policy group named `Select`; modules cannot use the built-in `Proxy` policy |
 
@@ -54,8 +54,10 @@ rule sets (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowro
 
 tailscale (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
 tailscale (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tailscale.txt
-ai-coding (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding.txt
-ai-coding (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding.txt
+ai-coding direct (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-direct.txt
+ai-coding direct (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-direct.txt
+ai-coding proxy (mihomo):         https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-proxy.txt
+ai-coding proxy (Shadowrocket):   https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-proxy.txt
 ```
 
 In Shadowrocket: Config -> Modules/Profiles -> `+` -> paste the URL.
