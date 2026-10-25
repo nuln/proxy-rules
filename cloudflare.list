@@ -1,0 +1,62 @@
+# Cloudflare services that MUST be DIRECT.
+# Routing policy: mihomo RULE-SET cloudflare -> DIRECT
+#                  Shadowrocket RULE-SET cloudflare.txt -> Direct
+#
+# Scope: cloudflared Tunnel, Zero Trust / WARP client, and Cloudflare DoH only.
+# Proxy-tolerant properties (workers.dev, pages.dev, cloudflarestream.com,
+# cloudflare.tv, cloudflare-ipfs.com, marketing sites) are intentionally excluded
+# and stay on the existing proxy lists.
+#
+# Why DIRECT: cloudflared keeps long-lived outbound QUIC/HTTP2 connections to the
+# Cloudflare edge; the WARP client uses certificate pinning and mTLS for device
+# enrollment; DoH is the bootstrap resolver those clients depend on. A proxy hop
+# breaks all three.
+
+# ---- cloudflared Tunnel: control plane and edge endpoints ----
+DOMAIN-SUFFIX,argotunnel.com
+DOMAIN-SUFFIX,cfargotunnel.com
+DOMAIN-SUFFIX,v2-origintunneld.api.cloudflare.com
+DOMAIN-SUFFIX,trycloudflare.com
+
+# ---- Zero Trust: WARP enrollment, Access, Gateway ----
+DOMAIN-SUFFIX,cloudflareaccess.com
+DOMAIN-SUFFIX,cloudflare-gateway.com
+DOMAIN-SUFFIX,cloudflareclient.com
+
+# ---- DoH endpoints (1.1.1.1 / one.one.one.one) ----
+DOMAIN-SUFFIX,cloudflare-dns.com
+DOMAIN-SUFFIX,one.one.one.one
+
+# ---- Cloudflare edge / anycast hostnames ----
+DOMAIN-SUFFIX,cloudflare.net
+DOMAIN-SUFFIX,cloudflare.com
+DOMAIN-SUFFIX,cloudflareanycast.net
+DOMAIN-SUFFIX,cloudflareglobal.net
+
+# ---- Cloudflare published IPv4 ranges (https://www.cloudflare.com/ips-v4) ----
+# Verified: zero overlap with cncidr.txt, so these never shadow China IP routing.
+# 100.64.0.0/10 is deliberately absent; tailscale.list and lancidr.txt own it.
+IP-CIDR,173.245.48.0/20,no-resolve
+IP-CIDR,103.21.244.0/22,no-resolve
+IP-CIDR,103.22.200.0/22,no-resolve
+IP-CIDR,103.31.4.0/22,no-resolve
+IP-CIDR,141.101.64.0/18,no-resolve
+IP-CIDR,108.162.192.0/18,no-resolve
+IP-CIDR,190.93.240.0/20,no-resolve
+IP-CIDR,188.114.96.0/20,no-resolve
+IP-CIDR,197.234.240.0/22,no-resolve
+IP-CIDR,198.41.128.0/17,no-resolve
+IP-CIDR,162.158.0.0/15,no-resolve
+IP-CIDR,104.16.0.0/13,no-resolve
+IP-CIDR,104.24.0.0/14,no-resolve
+IP-CIDR,172.64.0.0/13,no-resolve
+IP-CIDR,131.0.72.0/22,no-resolve
+
+# ---- Cloudflare published IPv6 ranges (https://www.cloudflare.com/ips-v6) ----
+IP-CIDR6,2400:cb00::/32,no-resolve
+IP-CIDR6,2606:4700::/32,no-resolve
+IP-CIDR6,2803:f800::/32,no-resolve
+IP-CIDR6,2405:b500::/32,no-resolve
+IP-CIDR6,2405:8100::/32,no-resolve
+IP-CIDR6,2a06:98c0::/29,no-resolve
+IP-CIDR6,2c0f:f248::/32,no-resolve

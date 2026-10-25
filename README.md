@@ -39,6 +39,48 @@ IP-CIDR6,fd7a:115c:a1e0::/48,no-resolve
 
 The master client configurations already reference the generated `tailscale.txt`.
 
+### `cloudflare.list`
+
+Keeps `cloudflared` Tunnel, Zero Trust / WARP enrollment, and Cloudflare DoH DIRECT.
+Only the parts that break behind a proxy hop are included:
+
+```text
+DOMAIN-SUFFIX,argotunnel.com
+DOMAIN-SUFFIX,cfargotunnel.com
+DOMAIN-SUFFIX,v2-origintunneld.api.cloudflare.com
+DOMAIN-SUFFIX,trycloudflare.com
+DOMAIN-SUFFIX,cloudflareaccess.com
+DOMAIN-SUFFIX,cloudflare-gateway.com
+DOMAIN-SUFFIX,cloudflareclient.com
+DOMAIN-SUFFIX,cloudflare-dns.com
+DOMAIN-SUFFIX,one.one.one.one
+DOMAIN-SUFFIX,cloudflare.net
+DOMAIN-SUFFIX,cloudflare.com
+DOMAIN-SUFFIX,cloudflareanycast.net
+DOMAIN-SUFFIX,cloudflareglobal.net
+IP-CIDR,198.41.128.0/17,no-resolve   # + the other 14 official IPv4 / 7 IPv6 ranges
+```
+
+Reasons this cannot be proxied: `cloudflared` holds long-lived outbound QUIC/HTTP2
+sessions to the edge, the WARP client uses certificate pinning and mTLS for device
+enrollment, and DoH is the bootstrap resolver both depend on.
+
+Ordering is load-bearing. `cloudflare.com`, `cfargotunnel.com`, `trycloudflare.com`,
+`cloudflareclient.com`, `cloudflareaccess.com`, `cloudflare-gateway.com`,
+`cloudflare-dns.com`, and `one.one.one.one` already exist on the generated
+`proxy.txt`/`gfw.txt` lists. Both clients stop at the first match, so the master
+configurations place `cloudflare` right after `tailscale` and before `gfw`/`proxy`.
+Do not move it below them.
+
+The Cloudflare IPv4/IPv6 ranges come from `cloudflare.com/ips-v4` and `ips-v6`. They
+were checked against `cncidr.txt` and have zero overlap, so they cannot shadow China
+IP routing. `100.64.0.0/10` is intentionally absent; it belongs to `tailscale.list`
+and `lancidr.txt`.
+
+Excluded on purpose, because they tolerate a proxy: `workers.dev`, `pages.dev`,
+`cloudflarestream.com`, `cloudflare.tv`, `cloudflare-ipfs.com`, and marketing sites.
+They stay on the existing proxy lists.
+
 ### `ai-coding-direct.list` and `ai-coding-proxy.list`
 
 Coding AI, coding agents, and AI app builders only. Every domain was tested on
@@ -84,7 +126,6 @@ Domains intentionally excluded:
 New file names must not collide with the 15 built-in outputs: `security`, `direct`, `proxy`,
 `gfw`, `greatfire`, `reject`, `private`, `icloud`, `tld-not-cn`, `apple`, `google`, `cncidr`,
 `lancidr`, `telegramcidr`, and `china_ip_list`.
-
 ## Build and edit rules
 
 - A push to this branch does not trigger a build. Run `mihomo.yml` / `shadowrocket.yml`
