@@ -5,6 +5,8 @@
 [Rule]
 # Tailscale FIRST: ts.net (MagicDNS) + 100.64.0.0/10 (CGNAT) must be DIRECT
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tailscale.txt,Direct
+# Cloudflare Tunnel / Zero Trust / WARP / DoH must be DIRECT before gfw/proxy
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/cloudflare.txt,Direct
 # Coding AI / agents: direct first, then proxy
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-direct.txt,Direct
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-proxy.txt,Select

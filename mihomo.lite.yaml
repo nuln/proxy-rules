@@ -4,6 +4,12 @@ proxy-groups:
   include-all: true
 
 rule-providers:
+  cloudflare:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/cloudflare.txt
+    interval: 86400
   tailscale:
     type: http
     behavior: classical
@@ -74,6 +80,8 @@ rule-providers:
 rules:
   # Tailscale FIRST: ts.net (MagicDNS) + 100.64.0.0/10 (CGNAT) must be DIRECT
   - RULE-SET,tailscale,DIRECT
+  # Cloudflare Tunnel / Zero Trust / DoH before gfw/proxy
+  - RULE-SET,cloudflare,DIRECT
   # private / LAN hostnames -> Direct (short-circuit)
   - RULE-SET,private,DIRECT
   # Coding AI / agents: direct first, then Select (your nodes)

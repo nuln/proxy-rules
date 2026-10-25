@@ -26,6 +26,10 @@ dns:
   # Keep ts.net out of fake-IP; DIRECT needs the real tailnet IP
   fake-ip-filter:
     - "+.ts.net"
+    # cloudflared Tunnel / WARP need the real edge IP, not a fake-IP
+    - "+.argotunnel.com"
+    - "+.cfargotunnel.com"
+    - "+.cloudflare-dns.com"
 
 
 proxies:
@@ -114,6 +118,14 @@ proxy-groups:
 
 
 rule-providers:
+  # Cloudflare Tunnel / Zero Trust / WARP / DoH: must be DIRECT, so it is
+  # referenced before gfw/proxy which classify some of these as proxied.
+  cloudflare:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/cloudflare.txt
+    interval: 86400
   # Classical ruleset mixing domains and CIDRs: Tailscale MagicDNS / Serve / CGNAT
   tailscale:
     type: http
@@ -229,6 +241,9 @@ rules:
   # Tailscale must be DIRECT first: ts.net is a MagicDNS private domain,
   # and 100.64.0.0/10 is CGNAT/tailnet that proxy nodes cannot resolve or reach.
   - RULE-SET,tailscale,DIRECT
+  # Cloudflare must also be DIRECT before gfw/proxy: cfargotunnel/trycloudflare/
+  # cloudflare-dns/one.one.one.one are on those lists and would otherwise be proxied.
+  - RULE-SET,cloudflare,DIRECT
   # LAN & private
   - RULE-SET,private,DIRECT
   - RULE-SET,lancidr,DIRECT,no-resolve

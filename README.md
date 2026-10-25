@@ -27,6 +27,7 @@ force-pushed by CI.
 | china_ip_list.txt | [17mon/china_ip_list](https://github.com/17mon/china_ip_list) |
 | security.txt (malware/mining/phishing, deduped against all core sets) | [URLhaus](https://urlhaus.abuse.ch/) / [adblock-nocoin](https://github.com/hoshsadiq/adblock-nocoin-list) / [Phishing Army](https://phishing.army/) / [OpenPhish](https://openphish.com/) |
 | tailscale.txt (Tailscale MagicDNS / CGNAT) | `individual` branch: `tailscale.list` |
+| cloudflare.txt (Cloudflare Tunnel / Zero Trust / WARP / DoH) | `individual` branch: `cloudflare.list` |
 | ai-coding-direct.txt / ai-coding-proxy.txt (coding AI / agents / AI app builders) | `individual` branch: `ai-coding-direct.list` / `ai-coding-proxy.list` (verified domains) |
 
 > Build logic is equivalent to clash-rules' run.yml (`full:` = exact match,
@@ -54,6 +55,8 @@ rule sets (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowro
 
 tailscale (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
 tailscale (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tailscale.txt
+cloudflare (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/cloudflare.txt
+cloudflare (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/cloudflare.txt
 ai-coding direct (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-direct.txt
 ai-coding direct (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-direct.txt
 ai-coding proxy (mihomo):         https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-proxy.txt
@@ -74,6 +77,34 @@ the file format, the existing lists, and the steps for adding a new list.
 - Pushing to `individual` does not trigger a build. Run `mihomo.yml` / `shadowrocket.yml`
   manually from Actions, or wait for the daily 08:00 Beijing time schedule.
 - Never edit `mihomo` or `shadowrocket` directly; CI force-pushes both branches.
+
+## Cloudflare notes
+
+`cloudflared` Tunnel, Zero Trust / WARP enrollment, and Cloudflare DoH must be routed
+DIRECT. The rule source is `individual/cloudflare.list`; the master configurations
+reference the generated `cloudflare.txt` immediately after `tailscale.txt` and before
+`gfw`/`proxy`.
+
+The ordering matters and is not cosmetic: `cloudflare.com`, `cfargotunnel.com`,
+`trycloudflare.com`, `cloudflareclient.com`, `cloudflareaccess.com`,
+`cloudflare-gateway.com`, `cloudflare-dns.com`, and `one.one.one.one` all already
+exist on the generated `proxy.txt`/`gfw.txt` lists with proxy intent. Both clients stop
+at the first match, so `cloudflare.txt` must win the race. It is the same mechanism
+Tailscale relies on (`ts.net` is really only on `private.txt` via `+.ts.net`).
+
+- mihomo: classical provider `cloudflare`, `RULE-SET,cloudflare,DIRECT`, plus
+  `+.argotunnel.com`, `+.cfargotunnel.com`, `+.cloudflare-dns.com` in `fake-ip-filter`
+  so `cloudflared` dials the real edge IP.
+- Shadowrocket: `RULE-SET` for `cloudflare.txt` -> `Direct`.
+
+The list also carries Cloudflare's published IPv4/IPv6 ranges, because Tunnel endpoints
+(`region1/region2.v2.argotunnel.com`) resolve into `198.41.128.0/17`. Those ranges were
+verified to have zero overlap with `cncidr.txt`, so they cannot shadow China IP routing.
+`100.64.0.0/10` is deliberately absent: `tailscale.list` and `lancidr.txt` already own it.
+
+Deliberately proxied, not in this list: `workers.dev`, `pages.dev`,
+`cloudflarestream.com`, `cloudflare.tv`, `cloudflare-ipfs.com`, and marketing sites.
+These are content delivery or ordinary web properties that tolerate a proxy hop.
 
 ## Tailscale notes
 
