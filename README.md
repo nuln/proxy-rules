@@ -85,26 +85,26 @@ DIRECT. The rule source is `individual/cloudflare.list`; the master configuratio
 reference the generated `cloudflare.txt` immediately after `tailscale.txt` and before
 `gfw`/`proxy`.
 
-The ordering matters and is not cosmetic: `cloudflare.com`, `cfargotunnel.com`,
-`trycloudflare.com`, `cloudflareclient.com`, `cloudflareaccess.com`,
-`cloudflare-gateway.com`, `cloudflare-dns.com`, and `one.one.one.one` all already
-exist on the generated `proxy.txt`/`gfw.txt` lists with proxy intent. Both clients stop
-at the first match, so `cloudflare.txt` must win the race. It is the same mechanism
-Tailscale relies on (`ts.net` is really only on `private.txt` via `+.ts.net`).
+The ordering matters and is not cosmetic: `cfargotunnel.com`, `trycloudflare.com`,
+`cloudflareclient.com`, `cloudflareaccess.com`, `cloudflare-gateway.com`,
+`cloudflare-dns.com`, and `one.one.one.one` all already exist on the generated
+`proxy.txt`/`gfw.txt` lists. Both clients stop at the first match, so `cloudflare.txt`
+must win the race to keep tunnels and zero-trust mesh direct.
 
 - mihomo: classical provider `cloudflare`, `RULE-SET,cloudflare,DIRECT`, plus
   `+.argotunnel.com`, `+.cfargotunnel.com`, `+.cloudflare-dns.com` in `fake-ip-filter`
   so `cloudflared` dials the real edge IP.
 - Shadowrocket: `RULE-SET` for `cloudflare.txt` -> `Direct`.
 
-The list also carries Cloudflare's published IPv4/IPv6 ranges, because Tunnel endpoints
-(`region1/region2.v2.argotunnel.com`) resolve into `198.41.128.0/17`. Those ranges were
-verified to have zero overlap with `cncidr.txt`, so they cannot shadow China IP routing.
-`100.64.0.0/10` is deliberately absent: `tailscale.list` and `lancidr.txt` already own it.
+The list carries the Tunnel endpoint range `198.41.128.0/17`, because Tunnel endpoints
+(`region1/region2.v2.argotunnel.com`) resolve into it. That range has zero overlap with
+`cncidr.txt`. General Cloudflare CDN Anycast ranges (e.g. `104.16.0.0/13`, `172.64.0.0/13`)
+are intentionally excluded so websites behind Cloudflare stay on proxy routes.
 
-Deliberately proxied, not in this list: `workers.dev`, `pages.dev`,
-`cloudflarestream.com`, `cloudflare.tv`, `cloudflare-ipfs.com`, and marketing sites.
-These are content delivery or ordinary web properties that tolerate a proxy hop.
+Deliberately proxied, not in this list: `cloudflare.com`, `dash.cloudflare.com`,
+`cloudflare.net`, `workers.dev`, `pages.dev`, `cloudflarestream.com`, `cloudflare.tv`,
+`cloudflare-ipfs.com`, and marketing sites. These are web properties that route through
+the proxy for speed and reliability.
 
 ## Tailscale notes
 
