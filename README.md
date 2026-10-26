@@ -117,8 +117,8 @@ the proxy for speed and reliability.
 `individual/tailscale.list`; the master configurations already reference the generated
 `tailscale.txt`:
 
-- mihomo: classical provider `tailscale`, `RULE-SET,tailscale,DIRECT`, MagicDNS nameserver
-  policy (`+.ts.net -> 100.100.100.100`), and a fake-IP filter for `+.ts.net`.
+- mihomo: classical provider `tailscale` (including daemon `PROCESS-NAME` rules for Linux and macOS), `RULE-SET,tailscale,DIRECT`, MagicDNS nameserver
+  policy (`+.ts.net -> 100.100.100.100`), a fake-IP filter for `+.ts.net`, and TUN `route-exclude-address` (`100.64.0.0/10`, `fd7a:115c:a1e0::/48`).
 - Shadowrocket: `RULE-SET` for `tailscale.txt`, plus `*.ts.net` and `100.64.0.0/10` in
   `skip-proxy`.
 
@@ -128,10 +128,9 @@ or when Shadowrocket runs as a local proxy.
 
 ### macOS: TUN and system proxy
 
-When mihomo runs in TUN mode, DIRECT traffic is bound to the physical interface (for
-example `en0`), while `100.64.0.0/10` is only reachable through the Tailscale `utun`
-interface. If the system proxy is also enabled, browsers using mihomo to access
-`https://*.ts.net` can time out. Add the following bypass to the active network service:
+Mihomo's `tun.route-exclude-address` (`100.64.0.0/10` and `fd7a:115c:a1e0::/48`) prevents TUN auto-routing from intercepting Tailscale mesh traffic. In pure TUN mode (system proxy disabled), all applications—including browsers and terminal utilities—reach Tailscale nodes seamlessly.
+
+If the GUI system proxy is toggled on concurrently, HTTP requests to Tailscale addresses enter Mihomo's local proxy port (e.g. 7890) rather than the TUN adapter. Because Mihomo binds outbound direct sockets to the physical interface (`en0`), these connections cannot reach the Tailscale `utun` interface. To use both concurrently, add Tailscale domains and CIDRs to the proxy bypass list:
 
 ```bash
 networksetup -setproxybypassdomains "Wi-Fi" \
@@ -139,8 +138,7 @@ networksetup -setproxybypassdomains "Wi-Fi" \
   localhost '*.local' '*.crashlytics.com' '<local>' '*.ts.net' 100.64.0.0/10
 ```
 
-Alternatively, disable the system proxy while TUN mode is enabled; TUN already captures
-all traffic.
+Recommended practice: keep system proxy disabled when TUN mode is active. TUN mode already intercepts all TCP/UDP traffic at Layer 3.
 
 ## PT (Private Tracker) notes
 

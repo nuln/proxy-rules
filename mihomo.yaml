@@ -31,6 +31,20 @@ dns:
     - "+.cfargotunnel.com"
     - "+.cloudflare-dns.com"
 
+# TUN configuration: mixed stack with auto-routing.
+# Crucial: route-exclude-address excludes Tailscale CGNAT and IPv6 ULA from mihomo TUN,
+# ensuring Tailscale peer and MagicDNS traffic flows directly via Tailscale's utun adapter.
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+  route-exclude-address:
+    - 100.64.0.0/10
+    - fd7a:115c:a1e0::/48
+
 
 proxies:
 - name: "jp-reality-01"
