@@ -29,6 +29,7 @@ force-pushed by CI.
 | tailscale.txt (Tailscale MagicDNS / CGNAT) | `individual` branch: `tailscale.list` |
 | cloudflare.txt (Cloudflare Tunnel / Zero Trust / WARP / DoH) | `individual` branch: `cloudflare.list` |
 | ai-coding-direct.txt / ai-coding-proxy.txt (coding AI / agents / AI app builders) | `individual` branch: `ai-coding-direct.list` / `ai-coding-proxy.list` (verified domains) |
+| pt-direct.txt / pt-proxy.txt (PT trackers direct, PT web / m-team.co images proxy) | `individual` branch: `pt-direct.list` / `pt-proxy.list` (verified domains) |
 
 > Build logic is equivalent to clash-rules' run.yml (`full:` = exact match,
 > `domain:`/bare domain = suffix including itself), built directly from the sources above.
@@ -61,6 +62,10 @@ ai-coding direct (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@m
 ai-coding direct (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-direct.txt
 ai-coding proxy (mihomo):         https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-proxy.txt
 ai-coding proxy (Shadowrocket):   https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-proxy.txt
+pt-direct (mihomo):               https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/pt-direct.txt
+pt-direct (Shadowrocket):         https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/pt-direct.txt
+pt-proxy (mihomo):                https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/pt-proxy.txt
+pt-proxy (Shadowrocket):          https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/pt-proxy.txt
 ```
 
 In Shadowrocket: Config -> Modules/Profiles -> `+` -> paste the URL.
@@ -136,6 +141,17 @@ networksetup -setproxybypassdomains "Wi-Fi" \
 
 Alternatively, disable the system proxy while TUN mode is enabled; TUN already captures
 all traffic.
+
+## PT (Private Tracker) notes
+
+PT traffic is split into two rule sets to separate browsing from BitTorrent protocol traffic:
+
+- `pt-direct`: Tracker announce endpoints (`tracker.*`, `tp.*`, `DOMAIN-KEYWORD,announce`) and BitTorrent infrastructure.
+  Must be DIRECT so client announcements carry the real home IP for green-light port forwarding and to avoid account bans.
+- `pt-proxy`: PT web interfaces (M-Team `m-team.cc`, `m-team.io`, etc.), dedicated image hosting (e.g. M-Team image domain `m-team.co`, `ptpimg.me`, `pixhost.to`, etc.), and `.torrent` file downloads.
+  Routed through `Select` proxy so web pages, poster images, and torrent downloads load without GFW or Cloudflare blocking.
+
+All active domains were verified against live DNS and HTTP endpoints on 2026-10-26. Dead or discontinued domains (e.g. `opencd.cc`, `hdchina.org`) were replaced with their active counterparts (`open.cd`, `hdchina.club`).
 
 ## Notes
 

@@ -16,6 +16,9 @@ DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/reject.txt,
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/security.txt,Reject
 DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/icloud.txt,Direct
 DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/apple.txt,Direct
+# PT: tracker direct first, then PT web / images proxy
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/pt-direct.txt,Direct
+RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/pt-proxy.txt,Select
 RULE-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/telegramcidr.txt,Select,no-resolve
 DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/google.txt,Select
 DOMAIN-SET,https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/gfw.txt,Select
