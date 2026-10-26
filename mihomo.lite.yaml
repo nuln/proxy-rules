@@ -1,3 +1,50 @@
+# =====================================================================
+# Lite mihomo configuration consuming rules from the `mihomo` branch.
+# Uses `include-all: true` to automatically absorb subscription proxies.
+# =====================================================================
+mixed-port: 7890
+allow-lan: true
+mode: rule
+log-level: info
+ipv6: false
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - tls://223.5.5.5
+    - https://doh.pub
+  # MagicDNS exists only on Tailscale's 100.100.100.100; public DoH cannot resolve *.ts.net
+  nameserver-policy:
+    "+.ts.net":
+      - 100.100.100.100
+  # Keep ts.net out of fake-IP; DIRECT needs the real tailnet IP
+  fake-ip-filter:
+    - "+.ts.net"
+    # cloudflared Tunnel / WARP need the real edge IP, not a fake-IP
+    - "+.argotunnel.com"
+    - "+.cfargotunnel.com"
+    - "+.cloudflare-dns.com"
+
+# TUN configuration: mixed stack with auto-routing.
+# Crucial: route-exclude-address excludes Tailscale CGNAT and IPv6 ULA from mihomo TUN,
+# ensuring Tailscale peer and MagicDNS traffic flows directly via Tailscale's utun adapter.
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+  route-exclude-address:
+    - 100.64.0.0/10
+    - fd7a:115c:a1e0::/48
+
 proxy-groups:
 - name: Select
   type: select
