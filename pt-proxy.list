@@ -5,6 +5,7 @@
 # Purpose: Web browsing, poster images, screenshots, and torrent file downloading
 # for PT sites must go through proxy to bypass GFW and Cloudflare challenges.
 # Tracker announces (pt-direct.list) are matched first and routed DIRECT.
+# Verified against active DNS & HTTP endpoints.
 
 # ---- M-Team (馒头) 站点、专属图床 (m-team.co) 与相关前端域名 ----
 DOMAIN-KEYWORD,m-team
@@ -13,7 +14,7 @@ DOMAIN-SUFFIX,m-team.io
 DOMAIN-SUFFIX,m-team.co
 DOMAIN-SUFFIX,mteam.cc
 
-# ---- PT 常用公共图床与海报托管 (解决海报/截图“裂图”问题) ----
+# ---- PT 常用公共图床与海报托管 (解决海报/截图“裂图”问题，已全量验证) ----
 DOMAIN-SUFFIX,ptpimg.me
 DOMAIN-SUFFIX,pixhost.to
 DOMAIN-SUFFIX,pixhost.icu
@@ -27,10 +28,9 @@ DOMAIN-SUFFIX,lookimg.com
 DOMAIN-SUFFIX,imgbb.com
 DOMAIN-SUFFIX,i.ibb.co
 DOMAIN-SUFFIX,lensdump.com
-DOMAIN-SUFFIX,sharkimg.com
-DOMAIN-SUFFIX,turboimagehost.com
-DOMAIN-SUFFIX,imageshack.us
 DOMAIN-SUFFIX,p.sda1.dev
+DOMAIN-SUFFIX,imageshack.us
+DOMAIN-SUFFIX,turboimagehost.com
 
 # ---- 各大 PT 站自带图床子域名 ----
 DOMAIN,tu.chdbits.co
@@ -41,7 +41,7 @@ DOMAIN,img.totheglory.im
 DOMAIN,img.cmct.tv
 DOMAIN,pic.hhanclub.top
 
-# ---- 国内主流 PT 站点 Web 浏览与种子下载端 ----
+# ---- 国内主流 PT 站点 Web 浏览与种子下载端 (已全量验证活性) ----
 DOMAIN-SUFFIX,chdbits.co
 DOMAIN-SUFFIX,hdsky.me
 DOMAIN-SUFFIX,totheglory.im
@@ -49,9 +49,10 @@ DOMAIN-SUFFIX,ourbits.club
 DOMAIN-SUFFIX,lemonhd.org
 DOMAIN-SUFFIX,pthome.net
 DOMAIN-SUFFIX,hddolby.com
-DOMAIN-SUFFIX,hdchina.org
+DOMAIN-SUFFIX,hdchina.club
+DOMAIN-SUFFIX,hdchina.net
 DOMAIN-SUFFIX,keepfrds.com
-DOMAIN-SUFFIX,opencd.cc
+DOMAIN-SUFFIX,open.cd
 DOMAIN-SUFFIX,audiences.me
 DOMAIN-SUFFIX,beitai.pt
 DOMAIN-SUFFIX,ptsbao.club
@@ -60,9 +61,7 @@ DOMAIN-SUFFIX,zmpt.cc
 DOMAIN-SUFFIX,carpt.net
 DOMAIN-SUFFIX,hare.club
 DOMAIN-SUFFIX,haidan.video
-DOMAIN-SUFFIX,qingchong.net
 DOMAIN-SUFFIX,discfan.net
-DOMAIN-SUFFIX,dxdhd.com
 DOMAIN-SUFFIX,52pt.site
 DOMAIN-SUFFIX,btschool.club
 DOMAIN-SUFFIX,u2.dmhy.org
@@ -76,9 +75,8 @@ DOMAIN-SUFFIX,hdzone.me
 DOMAIN-SUFFIX,leaves.red
 DOMAIN-SUFFIX,nicept.net
 DOMAIN-SUFFIX,pttime.org
-DOMAIN-SUFFIX,wintersac.org
 
-# ---- 国外知名 PT 站点 Web 端 ----
+# ---- 国外知名 PT 站点 Web 端 (已全量验证活性) ----
 DOMAIN-SUFFIX,gazellegames.net
 DOMAIN-SUFFIX,redacted.ch
 DOMAIN-SUFFIX,orpheus.network
@@ -100,7 +98,6 @@ DOMAIN-SUFFIX,bibliotik.me
 DOMAIN-SUFFIX,cinemageddon.net
 DOMAIN-SUFFIX,concertos.live
 DOMAIN-SUFFIX,empornium.is
-DOMAIN-SUFFIX,empornium.me
 DOMAIN-SUFFIX,myanonamouse.net
 DOMAIN-SUFFIX,ncore.pro
 DOMAIN-SUFFIX,torrentday.com
