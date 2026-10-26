@@ -1,0 +1,64 @@
+# Private Tracker (PT) tracker and BitTorrent direct rules
+# Routing policy: mihomo RULE-SET pt-direct -> DIRECT
+#                  Shadowrocket RULE-SET pt-direct.txt -> Direct
+#
+# Purpose: Tracker announces and P2P transfers MUST be DIRECT to ensure connectability
+# (green light port forwarding) and prevent account bans due to datacenter/proxy IP reporting.
+# Web browsing, poster images, and torrent downloading live in pt-proxy.list.
+
+# ---- Generic announce keyword (matches any tracker announce endpoint) ----
+DOMAIN-KEYWORD,announce
+
+# ---- Generic BitTorrent protocol infrastructure ----
+DOMAIN-SUFFIX,bittorrent.com
+
+# ---- M-Team (馒头) tracker endpoints ----
+DOMAIN,tracker.m-team.cc
+DOMAIN,tracker.m-team.io
+DOMAIN,tracker.m-team.co
+DOMAIN,tp.m-team.cc
+DOMAIN,tp.m-team.io
+DOMAIN,tp.m-team.co
+
+# ---- 国内主流 PT 站专属 Tracker 端点 ----
+DOMAIN,tracker.chdbits.co
+DOMAIN,tracker.hdsky.me
+DOMAIN,tracker.ourbits.club
+DOMAIN,tracker.totheglory.im
+DOMAIN,tracker.lemonhd.org
+DOMAIN,tracker.pthome.net
+DOMAIN,tracker.hddolby.com
+DOMAIN,tracker.keepfrds.com
+DOMAIN,tracker.audiences.me
+DOMAIN,tracker.springwood.me
+DOMAIN,tracker.btschool.club
+DOMAIN,tracker.pterclub.com
+DOMAIN,tracker.hdchina.org
+DOMAIN,tracker.opencd.cc
+DOMAIN,tracker.ptsbao.club
+DOMAIN,tracker.zmpt.cc
+DOMAIN,tracker.carpt.net
+DOMAIN,tracker.hare.club
+DOMAIN,tracker.haidan.video
+DOMAIN,tracker.qingchong.net
+DOMAIN,tracker.discfan.net
+DOMAIN,tracker.52pt.site
+DOMAIN,tracker.dmhy.org
+DOMAIN,tracker.u2.dmhy.org
+
+# ---- 国外知名 PT 站专属 Tracker 端点 ----
+DOMAIN,tracker.redacted.ch
+DOMAIN,tracker.orpheus.network
+DOMAIN,tracker.torrentleech.org
+DOMAIN,tracker.tleechreload.org
+DOMAIN,tracker.passthepopcorn.me
+DOMAIN,tracker.broadcasthe.net
+DOMAIN,tracker.gazellegames.net
+DOMAIN,tracker.hdbits.org
+DOMAIN,tracker.beyond-hd.me
+DOMAIN,tracker.blutopia.xyz
+DOMAIN,tracker.cinemaz.to
+DOMAIN,tracker.avistaz.to
+DOMAIN,tracker.cgpeers.com
+DOMAIN,tracker.karagarga.in
+DOMAIN,tracker.animebytes.tv

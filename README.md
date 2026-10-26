@@ -110,6 +110,25 @@ Domains intentionally excluded:
 `trae.cn` is intentionally not in the proxy list. It is routed DIRECT by
 `GEOIP,CN,DIRECT` / `MATCH,DIRECT`.
 
+### `pt-direct.list` and `pt-proxy.list`
+
+Private Tracker (PT) sites, image hosting, and tracker announce rules. Split by routing policy:
+
+Direct file (`pt-direct.list`):
+
+- Tracker announce endpoints (`tracker.*`, `tp.*`, `DOMAIN-KEYWORD,announce`) and BitTorrent infrastructure.
+- Keeps tracker announces and P2P transfers DIRECT to ensure connectability (green-light port forwarding) and avoid account bans from datacenter/proxy IP reporting.
+- mihomo: `RULE-SET,pt-direct,DIRECT`
+- Shadowrocket: `RULE-SET,...,pt-direct.txt,Direct`
+
+Proxy file (`pt-proxy.list`):
+
+- PT websites (M-Team `m-team.cc`, `m-team.io`, and other domestic/foreign PT sites).
+- Dedicated PT image hosts (e.g. M-Team image domain `m-team.co`, `ptpimg.me`, `pixhost.to`, `imgbox.com`, `imagebam.com`, etc.) to prevent poster/screenshot image loading failures.
+- Torrent file download web endpoints.
+- mihomo: `RULE-SET,pt-proxy,Select`
+- Shadowrocket: `RULE-SET,...,pt-proxy.txt,Select`
+
 ## Adding a new list
 
 1. Create `name.list` in the root of this branch.
