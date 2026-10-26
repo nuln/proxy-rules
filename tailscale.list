@@ -1,5 +1,9 @@
-# Tailscale MagicDNS / Serve / CGNAT
+# Tailscale MagicDNS / Serve / CGNAT / Daemon processes
 # Flat rule file: mihomo converts it to a classical payload; Shadowrocket emits raw rules.
+PROCESS-NAME,tailscaled
+PROCESS-NAME,Tailscale
+PROCESS-NAME,io.tailscale.ipn.macsys.network-extension
+PROCESS-NAME,IPNExtension
 DOMAIN-SUFFIX,ts.net
 DOMAIN-SUFFIX,tailscale.com
 DOMAIN-SUFFIX,tailscale.io
