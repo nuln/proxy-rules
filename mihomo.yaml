@@ -28,8 +28,8 @@ dns:
     - tls://223.5.5.5
     - https://doh.pub
     # IPv6 DoT (reached over IPv6 when the network supports it)
-    - tls://240e:4c:4008::1
-    - tls://2408:8000:1000:8000::1
+    - tls://[240e:4c:4008::1]
+    - tls://[2408:8000:1000:8000::1]
     # IPv4 DoH fallback kept for IPv6-less networks
     - https://dns.alidns.com/dns-query
   # MagicDNS exists only on Tailscale's 100.100.100.100; public DoH cannot resolve *.ts.net
