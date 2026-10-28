@@ -6,19 +6,30 @@ mixed-port: 7890
 allow-lan: true
 mode: rule
 log-level: info
-ipv6: false
+# IPv6: dual-stack listener + IPv6 outbound (see mihomo.yaml for the rationale).
+ipv6: true
 
 dns:
   enable: true
-  ipv6: false
+  ipv6: true
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
+  # IPv6 fake-IP range for AAAA answers (kept inside the tunnel).
+  fake-ip-range6: fc00::/18
+  # Bootstrap resolvers: plain IPv4 only (must work before any DoH is resolved
+  # and on hosts without IPv6 connectivity).
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
   nameserver:
+    # IPv4 DoH / DoT (works everywhere)
     - tls://223.5.5.5
     - https://doh.pub
+    # IPv6 DoT (reached over IPv6 when the network supports it)
+    - tls://240e:4c:4008::1
+    - tls://2408:8000:1000:8000::1
+    # IPv4 DoH fallback kept for IPv6-less networks
+    - https://dns.alidns.com/dns-query
   # MagicDNS exists only on Tailscale's 100.100.100.100; public DoH cannot resolve *.ts.net
   nameserver-policy:
     "+.ts.net":
@@ -37,10 +48,17 @@ dns:
 tun:
   enable: true
   stack: mixed
+  # Take over both address families (IPv4 + IPv6); see mihomo.yaml.
   auto-route: true
   auto-detect-interface: true
+  inet4-address:
+    - 172.19.0.1/30
+  inet6-address:
+    - fdfe:dcba:9876::1/126
+  strict-route: false
   dns-hijack:
     - any:53
+  # Tailscale CGNAT (IPv4) and Tailscale ULA (IPv6) must stay outside the tunnel
   route-exclude-address:
     - 100.64.0.0/10
     - fd7a:115c:a1e0::/48

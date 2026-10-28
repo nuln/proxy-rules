@@ -128,7 +128,8 @@ or when Shadowrocket runs as a local proxy.
 
 ### macOS: TUN and system proxy
 
-Mihomo's `tun.route-exclude-address` (`100.64.0.0/10` and `fd7a:115c:a1e0::/48`) prevents TUN auto-routing from intercepting Tailscale mesh traffic. In pure TUN mode (system proxy disabled), all applications—including browsers and terminal utilities—reach Tailscale nodes seamlessly.
+Mihomo's `tun.route-exclude-address` (`100.64.0.0/10` and `fd7a:115c:a1e0::/48`) prevents TUN auto-routing from intercepting Tailscale mesh traffic.
+Both address families are routed into TUN (`ipv6: true`, `dns.fake-ip-range6`, `tun.inet6-address`), so IPv6 traffic is not leaked around the tunnel. In pure TUN mode (system proxy disabled), all applications—including browsers and terminal utilities—reach Tailscale nodes seamlessly.
 
 If the GUI system proxy is toggled on concurrently, HTTP requests to Tailscale addresses enter Mihomo's local proxy port (e.g. 7890) rather than the TUN adapter. Because Mihomo binds outbound direct sockets to the physical interface (`en0`), these connections cannot reach the Tailscale `utun` interface. To use both concurrently, add Tailscale domains and CIDRs to the proxy bypass list:
 
