@@ -99,14 +99,22 @@ jobs:
               return [("suffix", m.group(1)) for l in text.splitlines()
                       if (m := re.match(r"server=/([^/]+)/", l.strip()))]
 
-          def parse_cidrs(text):
-              return [("cidr", l.strip()) for l in text.splitlines() if CIDR.fullmatch(l.strip())]
+          def parse_cidrs(name, text):
+              out = []
+              for l in text.splitlines():
+                  c = l.strip()
+                  if CIDR.fullmatch(c):
+                      # 排除 2001::/23，避免 GFW 投毒的 2001::1 误入 lancidr 局域网直连导致超时
+                      if name == "lancidr.txt" and c == "2001::/23":
+                          continue
+                      out.append(("cidr", c))
+              return out
 
           def build(name, text, mode):
               if name in DNS_FILES:
                   return parse_dnsmasq(text)
               if name in CIDR_FILES:
-                  return parse_cidrs(text)
+                  return parse_cidrs(name, text)
               return parse_v2fly(text, mode)
 
           def ruleset(entries):

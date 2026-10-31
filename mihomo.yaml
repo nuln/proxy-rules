@@ -59,13 +59,28 @@ tun:
   inet6-address:
     - fdfe:dcba:9876::1/126
   # macOS / Windows: also add the IPv6 default route
-  strict-route: false
+  strict-route: true
   dns-hijack:
     - any:53
   # Tailscale CGNAT (IPv4) and Tailscale ULA (IPv6) must stay outside the tunnel
   route-exclude-address:
     - 100.64.0.0/10
     - fd7a:115c:a1e0::/48
+
+sniffer:
+  enable: true
+  parse-pure-ip: true
+  force-dns-mapping: true
+  override-destination: false
+  sniff:
+    HTTP:
+      ports: [80, 443]
+    TLS:
+      ports: [443]
+    QUIC:
+      ports: [443]
+  skip-domain:
+    - "+.push.apple.com"
 
 
 proxies:
