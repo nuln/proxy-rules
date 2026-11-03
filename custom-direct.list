@@ -1,0 +1,77 @@
+# ========================================================
+# 1. 基础网络与私有隧道 (Tailscale & MagicDNS)
+# ========================================================
+DOMAIN-SUFFIX,ts.net
+DOMAIN-SUFFIX,tailscale.com
+DOMAIN-SUFFIX,tailscale.io
+IP-CIDR,100.64.0.0/10,no-resolve
+IP-CIDR6,fd7a:115c:a1e0::/48,no-resolve
+
+# ========================================================
+# 2. Cloudflare 特殊服务 (Tunnel / WARP 注册 / DoH 端点)
+# 必须直连，代理会导致隧道 QUIC 断连或证书绑定失败
+# ========================================================
+DOMAIN-SUFFIX,argotunnel.com
+DOMAIN-SUFFIX,cfargotunnel.com
+DOMAIN-SUFFIX,v2-origintunneld.api.cloudflare.com
+DOMAIN-SUFFIX,trycloudflare.com
+DOMAIN-SUFFIX,cloudflareaccess.com
+DOMAIN-SUFFIX,cloudflare-gateway.com
+DOMAIN-SUFFIX,cloudflareclient.com
+DOMAIN-SUFFIX,cloudflare-dns.com
+DOMAIN-SUFFIX,one.one.one.one
+IP-CIDR,198.41.128.0/17,no-resolve
+
+# ========================================================
+# 3. 国内 AI 服务白名单 (核心：防止被后续的 .ai / .io 误判走代理)
+# ========================================================
+# --- DeepSeek ---
+DOMAIN-SUFFIX,deepseek.com
+DOMAIN-SUFFIX,deepseeksvc.com
+
+# --- 月之暗面 (Kimi) ---
+DOMAIN-SUFFIX,kimi.ai
+DOMAIN-SUFFIX,moonshot.cn
+DOMAIN-SUFFIX,moonshot.ai
+
+# --- 阿里通义千问 / 百炼 ---
+DOMAIN-SUFFIX,tongyi.ai
+
+# --- 智谱清言 (GLM) ---
+DOMAIN-SUFFIX,zhipuai.cn
+DOMAIN-SUFFIX,bigmodel.cn
+DOMAIN-SUFFIX,chatglm.cn
+
+# --- MiniMax / 海螺 AI ---
+DOMAIN-SUFFIX,minimax.io
+DOMAIN-SUFFIX,minimaxi.com
+DOMAIN-SUFFIX,hailuoai.com
+
+# --- 字节跳动 (豆包 / Coze 国内版) ---
+DOMAIN-SUFFIX,doubao.com
+DOMAIN-SUFFIX,volcengine.com
+DOMAIN-SUFFIX,coze.cn
+
+# --- 其他国内知名模型 ---
+DOMAIN-SUFFIX,01.ai
+DOMAIN-SUFFIX,wanzhi.com
+DOMAIN-SUFFIX,klingai.com
+DOMAIN-SUFFIX,klingai.cn
+DOMAIN-SUFFIX,stepfun.com
+DOMAIN-SUFFIX,yuewen.cn
+DOMAIN-SUFFIX,trae.cn
+DOMAIN-SUFFIX,baichuan-ai.com
+
+# ========================================================
+# 4. PT 下载与做种相关 (Tracker 汇报直连保绿灯)
+# ========================================================
+DOMAIN-KEYWORD,announce
+DOMAIN-KEYWORD,torrent
+DOMAIN-KEYWORD,tracker
+DOMAIN-SUFFIX,tracker.m-team.cc
+DOMAIN-SUFFIX,tracker.m-team.io
+
+# ========================================================
+# 5. 个人特定业务直连
+# ========================================================
+DOMAIN-SUFFIX,nuln.dev
