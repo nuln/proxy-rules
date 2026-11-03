@@ -26,10 +26,8 @@ force-pushed by CI.
 | cncidr/lancidr/telegramcidr.txt | [Loyalsoldier/geoip](https://github.com/Loyalsoldier/geoip) |
 | china_ip_list.txt | [17mon/china_ip_list](https://github.com/17mon/china_ip_list) |
 | security.txt (malware/mining/phishing, deduped against all core sets) | [URLhaus](https://urlhaus.abuse.ch/) / [adblock-nocoin](https://github.com/hoshsadiq/adblock-nocoin-list) / [Phishing Army](https://phishing.army/) / [OpenPhish](https://openphish.com/) |
-| tailscale.txt (Tailscale MagicDNS / CGNAT) | `individual` branch: `tailscale.list` |
-| cloudflare.txt (Cloudflare Tunnel / Zero Trust / WARP / DoH) | `individual` branch: `cloudflare.list` |
-| ai-coding-direct.txt / ai-coding-proxy.txt (coding AI / agents / AI app builders) | `individual` branch: `ai-coding-direct.list` / `ai-coding-proxy.list` (verified domains) |
-| pt-direct.txt / pt-proxy.txt (PT trackers direct, PT web / m-team.co images proxy) | `individual` branch: `pt-direct.list` / `pt-proxy.list` (verified domains) |
+| custom-direct.txt (Tailscale, Cloudflare Tunnel/WARP, domestic AI, PT trackers, nuln.dev) | `individual` branch: `custom-direct.list` |
+| custom-proxy.txt (Coding AI/agents, frontier LLMs, AI hubs, multimodal AI, PT web) | `individual` branch: `custom-proxy.list` |
 
 > Build logic is equivalent to clash-rules' run.yml (`full:` = exact match,
 > `domain:`/bare domain = suffix including itself), built directly from the sources above.
@@ -54,18 +52,10 @@ shadowrocket (module):     https://cdn.jsdelivr.net/gh/nuln/proxy-rules@master/s
 rule sets (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/<file>
 rule sets (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/<file>
 
-tailscale (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/tailscale.txt
-tailscale (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/tailscale.txt
-cloudflare (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/cloudflare.txt
-cloudflare (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/cloudflare.txt
-ai-coding direct (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-direct.txt
-ai-coding direct (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-direct.txt
-ai-coding proxy (mihomo):         https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/ai-coding-proxy.txt
-ai-coding proxy (Shadowrocket):   https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/ai-coding-proxy.txt
-pt-direct (mihomo):               https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/pt-direct.txt
-pt-direct (Shadowrocket):         https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/pt-direct.txt
-pt-proxy (mihomo):                https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/pt-proxy.txt
-pt-proxy (Shadowrocket):          https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/pt-proxy.txt
+custom-direct (mihomo):       https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/custom-direct.txt
+custom-direct (Shadowrocket): https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/custom-direct.txt
+custom-proxy (mihomo):        https://cdn.jsdelivr.net/gh/nuln/proxy-rules@mihomo/custom-proxy.txt
+custom-proxy (Shadowrocket):  https://cdn.jsdelivr.net/gh/nuln/proxy-rules@shadowrocket/custom-proxy.txt
 ```
 
 In Shadowrocket: Config -> Modules/Profiles -> `+` -> paste the URL.
