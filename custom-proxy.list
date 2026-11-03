@@ -11,7 +11,7 @@ DOMAIN-SUFFIX,windsurf.ai
 DOMAIN-SUFFIX,zed.dev
 DOMAIN-SUFFIX,warp.dev
 
-# --- 编程 Agent & 辅助工具 (原错误直连的工具全部归入此处) ---
+# --- 编程 Agent & 辅助工具 ---
 DOMAIN-SUFFIX,cline.bot
 DOMAIN-SUFFIX,aider.chat
 DOMAIN-SUFFIX,roocode.com
@@ -96,7 +96,43 @@ DOMAIN-SUFFIX,elevenlabs.io
 DOMAIN-SUFFIX,civitai.com
 
 # ========================================================
-# 5. PT 网站前端与图片代理
+# 5. AI 开发者工程化框架、算力平台与向量库
+# ========================================================
+# --- 模型框架与社区 ---
+DOMAIN-SUFFIX,ollama.com
+DOMAIN-SUFFIX,ollama.ai
+DOMAIN-SUFFIX,langchain.com
+DOMAIN-SUFFIX,llamaindex.ai
+DOMAIN-SUFFIX,wandb.ai
+DOMAIN-SUFFIX,wandb.com
+DOMAIN-SUFFIX,vllm.ai
+
+# --- GPU 算力平台 ---
+DOMAIN-SUFFIX,runpod.io
+DOMAIN-SUFFIX,runpod.net
+DOMAIN-SUFFIX,modal.com
+DOMAIN-SUFFIX,vast.ai
+DOMAIN-SUFFIX,lambdalabs.com
+
+# --- 向量数据库云服务 ---
+DOMAIN-SUFFIX,pinecone.io
+DOMAIN-SUFFIX,qdrant.io
+DOMAIN-SUFFIX,weaviate.io
+
+# ========================================================
+# 6. 日常 AI 效率助手与常用工具
+# ========================================================
+DOMAIN-SUFFIX,deepl.com
+DOMAIN-SUFFIX,notion.so
+DOMAIN-SUFFIX,notion.ai
+DOMAIN-SUFFIX,phind.com
+DOMAIN-SUFFIX,sider.ai
+DOMAIN-SUFFIX,monica.im
+DOMAIN-SUFFIX,grammarly.com
+DOMAIN-SUFFIX,linear.app
+
+# ========================================================
+# 7. PT 网站前端与图片代理
 # ========================================================
 DOMAIN-SUFFIX,m-team.cc
 DOMAIN-SUFFIX,m-team.io

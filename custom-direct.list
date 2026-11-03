@@ -52,7 +52,16 @@ DOMAIN-SUFFIX,doubao.com
 DOMAIN-SUFFIX,volcengine.com
 DOMAIN-SUFFIX,coze.cn
 
-# --- 其他国内知名模型 ---
+# --- 腾讯 (混元 / 元宝) ---
+DOMAIN-SUFFIX,yuanbao.tencent.com
+DOMAIN-SUFFIX,hunyuan.tencent.com
+
+# --- 商汤 (日日新 / 小浣熊) ---
+DOMAIN-SUFFIX,sensetime.com
+DOMAIN-SUFFIX,sensecore.cn
+DOMAIN-SUFFIX,raccoon.sensetime.com
+
+# --- 其他国内知名大模型与助手 ---
 DOMAIN-SUFFIX,01.ai
 DOMAIN-SUFFIX,wanzhi.com
 DOMAIN-SUFFIX,klingai.com
@@ -61,6 +70,8 @@ DOMAIN-SUFFIX,stepfun.com
 DOMAIN-SUFFIX,yuewen.cn
 DOMAIN-SUFFIX,trae.cn
 DOMAIN-SUFFIX,baichuan-ai.com
+DOMAIN-SUFFIX,tiangong.cn
+DOMAIN-SUFFIX,quark.cn
 
 # ========================================================
 # 4. PT 下载与做种相关 (Tracker 汇报直连保绿灯)
@@ -75,3 +86,10 @@ DOMAIN-SUFFIX,tracker.m-team.io
 # 5. 个人特定业务直连
 # ========================================================
 DOMAIN-SUFFIX,nuln.dev
+
+# ========================================================
+# 6. 国内开发者高频镜像与开发平台 (保障极速直连)
+# ========================================================
+DOMAIN-SUFFIX,npmmirror.com
+DOMAIN-SUFFIX,gitee.com
+DOMAIN-SUFFIX,gitcode.com
