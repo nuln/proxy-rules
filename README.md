@@ -45,7 +45,10 @@ High-priority PROXY rules that must be routed through your proxy nodes:
 2. **Frontier LLM Platforms**: OpenAI / ChatGPT, Anthropic / Claude, Google Gemini, xAI / Grok, Mistral, Cohere, Meta AI
 3. **AI Gateways & Hubs**: OpenRouter, Perplexity, Poe, Groq, Cerebras, Together AI, Fireworks, DeepInfra, Replicate, Hugging Face
 4. **Multimodal / Generative AI**: Midjourney, Suno, Udio, Runway, Pika, Luma, ElevenLabs, Civitai
-5. **PT Web & Images**: PT site web frontends and poster image hosts (e.g. `m-team.cc`, `ptpimg.me`)
+5. **AI Tooling & Compute**: Ollama, LangChain, LlamaIndex, WandB, vLLM, RunPod, Modal, Vast.ai, Pinecone, Qdrant
+6. **AI Productivity**: DeepL, Notion AI, Phind, Sider, Monica, Grammarly, Linear
+7. **PT Web & Images**: PT site web frontends and poster image hosts (e.g. `m-team.cc`, `ptpimg.me`)
+8. **Cryptocurrency & Web3**: Major exchanges (Bybit full suite, Binance, OKX, Coinbase, Gate.io, Bitget, Kraken, KuCoin, HTX, MEXC, HashKey), market analytics (TradingView, CoinMarketCap, CoinGecko, DeFiLlama, DexScreener), Web3 wallets (MetaMask, Phantom, Rabby), DEXs (Uniswap, Raydium, Jupiter), and explorers/RPCs (Etherscan, Solscan, Infura, Alchemy)
 
 ## Build and edit rules
 
