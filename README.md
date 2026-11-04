@@ -27,7 +27,7 @@ force-pushed by CI.
 | china_ip_list.txt | [17mon/china_ip_list](https://github.com/17mon/china_ip_list) |
 | security.txt (malware/mining/phishing, deduped against all core sets) | [URLhaus](https://urlhaus.abuse.ch/) / [adblock-nocoin](https://github.com/hoshsadiq/adblock-nocoin-list) / [Phishing Army](https://phishing.army/) / [OpenPhish](https://openphish.com/) |
 | custom-direct.txt (Tailscale, Cloudflare Tunnel/WARP, domestic AI, PT trackers, nuln.dev) | `individual` branch: `custom-direct.list` |
-| custom-proxy.txt (Coding AI/agents, frontier LLMs, AI hubs, multimodal AI, PT web) | `individual` branch: `custom-proxy.list` |
+| custom-proxy.txt (Coding AI/agents, frontier LLMs, AI hubs, multimodal AI, PT web, crypto/web3) | `individual` branch: `custom-proxy.list` |
 
 > Build logic is equivalent to clash-rules' run.yml (`full:` = exact match,
 > `domain:`/bare domain = suffix including itself), built directly from the sources above.
