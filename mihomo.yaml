@@ -54,6 +54,8 @@ tun:
   # and keeps leaking outside the tunnel.
   auto-route: true
   auto-detect-interface: true
+  # 1400 avoids IP packet fragmentation across PPPoE (1492), IPv6, WireGuard, and mobile hotspots.
+  mtu: 1400
   inet4-address:
     - 172.19.0.1/30
   inet6-address:

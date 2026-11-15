@@ -51,6 +51,8 @@ tun:
   # Take over both address families (IPv4 + IPv6); see mihomo.yaml.
   auto-route: true
   auto-detect-interface: true
+  # 1400 avoids IP packet fragmentation across PPPoE (1492), IPv6, WireGuard, and mobile hotspots.
+  mtu: 1400
   inet4-address:
     - 172.19.0.1/30
   inet6-address:
