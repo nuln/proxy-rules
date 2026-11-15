@@ -108,7 +108,7 @@ the proxy for speed and reliability.
 `tailscale.txt`:
 
 - mihomo: classical provider `tailscale` (including daemon `PROCESS-NAME` rules for Linux and macOS), `RULE-SET,tailscale,DIRECT`, MagicDNS nameserver
-  policy (`+.ts.net -> 100.100.100.100`), a fake-IP filter for `+.ts.net`, and TUN `route-exclude-address` (`100.64.0.0/10`, `fd7a:115c:a1e0::/48`).
+  policy (`+.ts.net -> 100.100.100.100`), a fake-IP filter for `+.ts.net`, and TUN `route-exclude-address` (`100.64.0.0/10`, `fd7a:115c:a1e0::/48`) with `mtu: 1400`.
 - Shadowrocket: `RULE-SET` for `tailscale.txt`, plus `*.ts.net` and `100.64.0.0/10` in
   `skip-proxy`.
 
